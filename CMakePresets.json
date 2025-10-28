@@ -1,0 +1,50 @@
+{
+  "version": 8,
+  "configurePresets": [
+    {
+      "name": "default",
+      "binaryDir": "${sourceDir}/build/",
+      "cacheVariables": {
+        "CMAKE_TOOLCHAIN_FILE" : "$env{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake"
+      }
+    },
+    {
+      "name": "Debug",
+      "inherits":["default"],
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE":"Debug"
+      }
+    },
+    {
+      "name": "ReleaseDebug",
+      "inherits": "default",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE":"RelWithDebInfo"
+      }
+    },
+    {
+      "name": "Production",
+      "inherits": "default",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Release"
+      }
+    }
+  ],
+  "buildPresets": [
+    {
+      "name": "Debug",
+      "configurePreset": "Debug",
+      "configuration": "Debug"
+    },
+    {
+      "name": "ReleaseDebug",
+      "configurePreset": "ReleaseDebug",
+      "configuration": "RelWithDebInfo"
+    },
+    {
+      "name": "Production",
+      "configurePreset": "Production",
+      "configuration": "Release"
+    }
+  ]
+}
