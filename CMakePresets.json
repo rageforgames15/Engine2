@@ -27,6 +27,9 @@
       "inherits": "default",
       "cacheVariables": {
         "CMAKE_BUILD_TYPE": "Release"
+      },
+      "environment": {
+        "PRODUCT_BUILD": ""
       }
     }
   ],

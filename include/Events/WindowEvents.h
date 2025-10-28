@@ -6,15 +6,15 @@ class WindowResizeEvent : public Event
 public:
   WindowResizeEvent(int width, int height) 
     : Event(EventType::WINDOW_RESIZED),
-    width(width),
-    height(height)
+    m_width(width),
+    m_height(height)
   {}
 
-  int GetWidth() const {return width;}
-  int GetHeight() const {return height;}
+  int GetWidth() const {return m_width;}
+  int GetHeight() const {return m_height;}
 
 private:
-  int width, height;
+  int m_width, m_height;
 };
 
 class WindowClosedEvent : public Event

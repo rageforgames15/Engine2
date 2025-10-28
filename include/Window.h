@@ -1,6 +1,7 @@
 #pragma once
 #include <cstdint>
 #include <string_view>
+#include "InputMgr.h"
 
 struct WindowSettings
 {
@@ -16,11 +17,14 @@ public:
   std::string_view GetTitle() const;
 
   // Window resize, close, release, focused
-  void SetEventCallback();
+  void SetWindowEventCallback();
+
+  InputManager& GetInputMgr();
 
   Window(const WindowSettings& settings);
   ~Window();
 private:
-  WindowSettings settings;
+  InputManager m_inputManager;
+  WindowSettings m_settings;
 };
 

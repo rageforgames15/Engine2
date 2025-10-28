@@ -17,14 +17,14 @@ class Event
 public:
   friend class EventDispatcher;
 public:
-  const EventType GetType() const {return type;}
+  const EventType GetType() const {return m_type;}
 
   Event(const EventType type)
-  : ishandled(false), type(type)
+  : m_ishandled(false), m_type(type)
   {}
   ~Event() = default;
 private:
-  const EventType type;
-  bool ishandled;
+  const EventType m_type;
+  bool m_ishandled;
 };
 

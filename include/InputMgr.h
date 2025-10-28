@@ -4,8 +4,15 @@
 class InputManager
 {
 public:
-
   static InputManager& Get();
+
+  bool IsKeyPressed(int key);
+  void SetKeyStatus(int key, bool isPressed);
+
+  void SetEventInputCallback();
+
+  InputManager();
+  ~InputManager();
 
   InputManager(const InputManager&) = delete;
   void operator=(const InputManager&) = delete;

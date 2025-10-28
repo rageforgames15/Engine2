@@ -5,17 +5,17 @@
 class EventDispatcher
 {
 public:
-  EventDispatcher(Event& event) : event(event) {}
+  EventDispatcher(Event& event) : m_event(event) {}
 
   template<EventType Type = EventType::NONE, typename FnEvent>
   void Dispatch(std::function<bool(const FnEvent&)> fn)
   {
-    if(!event.ishandled && Type == event.type)
+    if(!m_event.m_ishandled && Type == m_event.m_type)
     {
-      event.ishandled = fn(static_cast<const FnEvent&>(event)) || false;
+      m_event.m_ishandled = fn(static_cast<const FnEvent&>(m_event)) || false;
     }
   }
 
 private:
-  Event& event;
+  Event& m_event;
 };

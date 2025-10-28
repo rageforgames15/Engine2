@@ -12,7 +12,6 @@ find_package(fmt CONFIG REQUIRED)
 
 add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/glad")
 
-
 file(
   GLOB_RECURSE
   SRCS
@@ -33,4 +32,7 @@ target_include_directories(
   ${CMAKE_SOURCE_DIR}/include/
 )
 
-
+if(DEFINED ENV{PRODUCT_BUILD})
+  target_compile_definitions(${CMAKE_PROJECT_NAME} PUBLIC PRODUCT_BUILD)
+  message(STATUS "Product build")
+endif()
