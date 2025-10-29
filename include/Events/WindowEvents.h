@@ -1,7 +1,8 @@
 #pragma once
 #include "Events.h"
 
-class WindowResizeEvent : public Event
+class WindowResizeEvent 
+  : public Event
 {
 public:
   WindowResizeEvent(int width, int height) 
@@ -17,7 +18,8 @@ private:
   int m_width, m_height;
 };
 
-class WindowClosedEvent : public Event
+class WindowClosedEvent
+  : public Event
 {
 public:
   WindowClosedEvent() : Event(EventType::WINDOW_CLOSED) {}

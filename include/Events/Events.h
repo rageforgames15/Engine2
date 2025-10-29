@@ -1,5 +1,6 @@
 #pragma once
 #include <cstdint>
+#include <functional>
 
 class EventDispatcher;
 
@@ -8,7 +9,7 @@ enum class EventType : uint8_t
   NONE = 0,
   WINDOW_RESIZED, WINDOW_RELEASED, WIDNOW_FOCUSED, WINDOW_CLOSED,
   KEY_PRESSED, KEY_RELEASED,
-  MOUSE_MOVE, MOUSE_BUTTON_PRESSED,
+  MOUSE_MOVE, MOUSE_BUTTON_PRESSED, MOUSE_BUTTON_RELEASED,
   APP_TICK
 };
 
@@ -27,4 +28,6 @@ private:
   const EventType m_type;
   bool m_ishandled;
 };
+
+typedef std::function<void(const Event&)> EventCallbacker;
 

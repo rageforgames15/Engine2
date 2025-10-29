@@ -1,15 +1,16 @@
 #pragma once
+#include "Events/Events.h"
 #include <GLFW/glfw3.h>
 
-class InputManager
+class InputManager final
 {
 public:
   static InputManager& Get();
 
   bool IsKeyPressed(int key);
-  void SetKeyStatus(int key, bool isPressed);
+  void SetKeyState(int key, bool isPressed);
 
-  void SetEventInputCallback();
+  void SetEventInputCallback(EventCallbacker callback);
 
   InputManager();
   ~InputManager();
@@ -18,4 +19,5 @@ public:
   void operator=(const InputManager&) = delete;
 private:
   bool m_keys[GLFW_KEY_LAST];
+  EventCallbacker m_callbackFunction;
 };
