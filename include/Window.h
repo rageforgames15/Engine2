@@ -37,6 +37,7 @@ public:
 
   void ResizeWindow(const WindowSize& size);
   WindowSize GetWindowSize();
+  void GetWindowSize(WindowSize& size);
 
   // Window resize, close, release, focused
   void SetWindowEventCallback(EventCallbacker callback);

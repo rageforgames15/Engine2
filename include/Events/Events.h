@@ -29,5 +29,5 @@ private:
   bool m_ishandled;
 };
 
-typedef std::function<void(const Event&)> EventCallbacker;
+typedef std::function<void(Event&)> EventCallbacker;
 

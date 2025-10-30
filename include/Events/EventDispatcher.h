@@ -12,7 +12,7 @@ public:
   {
     if(!m_event.m_ishandled && Type == m_event.m_type)
     {
-      m_event.m_ishandled = fn(static_cast<const FnEvent&>(m_event)) || false;
+      m_event.m_ishandled = fn((const FnEvent&)m_event) || false;
     }
   }
 

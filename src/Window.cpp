@@ -4,13 +4,20 @@
 #include "Events/WindowEvents.h"
 #include "InputMgr.h"
 #include <GLFW/glfw3.h>
+#include <fmt/base.h>
 #include <functional>
 #include <string_view>
+
+void glfwError(int code, const char* desc)
+{
+  fmt::print("Code: {}, Desc: {}", code, desc);
+}
 
 GLFWwindow* CreateWindow(
   const WindowSettings& settings
 )
 {
+  glfwSetErrorCallback(glfwError);
   glfwWindowHint(GLFW_RESIZABLE, settings.resizable);
   glfwWindowHint(GLFW_SAMPLES, settings.MSAA);
   glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
@@ -79,6 +86,11 @@ WindowSize Window::GetWindowSize()
   return size;
 }
 
+void Window::GetWindowSize(WindowSize& size)
+{
+  glfwGetWindowSize(m_window, &size.width, &size.height);
+}
+
 void Window::SetWindowEventCallback(EventCallbacker callback)
 {
   m_callback = std::move(callback);
@@ -109,6 +121,8 @@ Window::Window(const WindowSettings& settings)
 {
   xengine_assert(m_window != nullptr);
   glfwSetWindowUserPointer(m_window, this);
+  glfwSetFramebufferSizeCallback(m_window, DefaultResizeWindowCallback);
+  glfwSetWindowCloseCallback(m_window, DefaultCloseEvent);
 }
 
 Window::~Window()
