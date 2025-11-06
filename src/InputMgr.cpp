@@ -18,18 +18,19 @@ bool InputManager::IsKeyPressed(int key)
 void InputManager::SetKeyState(int key, bool isPressed)
 {
   xengine_assert(key < GLFW_KEY_LAST);
-  m_keys[key] = isPressed;
 
-  if(isPressed)
+  if(isPressed && !m_keys[key])
   {
     KeyPressedEvent event(key);
     m_callbackFunction(event);
   }
-  else
+  else if(!isPressed && m_keys[key])
   {
     KeyReleasedEvent event(key);
     m_callbackFunction(event);
   }
+
+  m_keys[key] = isPressed;
 }
 
 InputManager& InputManager::Get()
@@ -53,6 +54,6 @@ InputManager::~InputManager()
 
 void InputManager::SetEventInputCallback(EventCallbacker callback)
 {
-  m_callbackFunction = std::move(callback);
+  m_callbackFunction = callback;
 }
 

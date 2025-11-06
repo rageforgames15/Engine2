@@ -1,6 +1,7 @@
 #pragma once
 #include "Events/Events.h"
 #include "Events/WindowEvents.h"
+#include "Events/MouseEvents.h"
 #include "Window.h"
 
 struct ApplicationSpecific
@@ -16,7 +17,7 @@ public:
 
   bool OnWindowResize(const WindowResizeEvent& event);
   bool OnWindowClose(const WindowClosedEvent& event);
-
+  bool OnMouseMove(const MouseMovedEvent& event);
   bool IsRunning() const;
   void Stop();
 

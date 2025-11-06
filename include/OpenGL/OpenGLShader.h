@@ -14,6 +14,8 @@ public:
     std::string_view vertexShaderFilePath,
     std::string_view fragmentShaderFilePath
   );
+
+  static void UnbindShader();
   ~OpenGLShader();
 private:
   uint32_t m_programID;

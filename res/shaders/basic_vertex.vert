@@ -1,8 +1,11 @@
 #version 460 core
 
 layout(location = 0) in vec3 in_Positions;
+uniform mat4 u_modelMat;
+uniform mat4 u_viewMat;
+uniform mat4 u_projMat;
 
 void main()
 {
-  gl_Position = vec4(in_Positions, 1.0f);
+  gl_Position = u_projMat * u_viewMat * u_modelMat * vec4(in_Positions, 1.0f);
 }

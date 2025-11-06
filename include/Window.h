@@ -32,22 +32,34 @@ public:
   friend
   void DefaultCloseEvent(GLFWwindow* window);
 
+  friend
+  void DefaultMouseMoveEvent(
+    GLFWwindow* glfwWindow,
+    double xPos,
+    double yPos
+  );
+
 public:
   void SetTitle(std::string_view title);
 
   void ResizeWindow(const WindowSize& size);
-  WindowSize GetWindowSize();
-  void GetWindowSize(WindowSize& size);
+  WindowSize GetWindowSize() const;
+  void GetWindowSize(WindowSize& size) const;
 
   // Window resize, close, release, focused
   void SetWindowEventCallback(EventCallbacker callback);
  
   InputManager& GetInputMgr();
-  void SwapBuffer();
+  void SwapBuffer() const;
 
-  void MakeContext();
+  void MakeContext() const;
 
-  bool ShouldWindowClose();
+  bool ShouldWindowClose() const;
+
+  void SetCursorPos(double xPos, double yPos) const;
+
+  void LockCursor() const;
+  void UnlockCursor() const;
 
   Window(const WindowSettings& settings);
   ~Window();

@@ -107,6 +107,11 @@ std::string GetBinaryDataFromFile(std::string_view filePath)
   return data;
 }
 
+void OpenGLShader::UnbindShader()
+{
+  glUseProgram(0);
+}
+
 OpenGLShader::OpenGLShader(
   std::string_view vertexShaderFilePath,
   std::string_view fragmentShaderFilePath

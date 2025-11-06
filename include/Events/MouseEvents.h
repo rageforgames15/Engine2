@@ -1,11 +1,12 @@
 #pragma once
 #include "Events.h"
 
-class MouseMovedEvent 
+class MouseMovedEvent
   : public Event
 {
-  float GetX() {return m_x;}
-  float GetY() {return m_y;}
+public:
+  float GetX() const {return m_x;}
+  float GetY() const {return m_y;}
 
   MouseMovedEvent(float x, float y)
   : Event(EventType::MOUSE_MOVE), m_x(x), m_y(y)

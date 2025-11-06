@@ -1,6 +1,7 @@
 #include "Window.h"
 #include "Asserts.h"
 #include "Events/Events.h"
+#include "Events/MouseEvents.h"
 #include "Events/WindowEvents.h"
 #include "InputMgr.h"
 #include <GLFW/glfw3.h>
@@ -22,6 +23,7 @@ GLFWwindow* CreateWindow(
   glfwWindowHint(GLFW_SAMPLES, settings.MSAA);
   glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
   glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
+  glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
   GLFWwindow* window = glfwCreateWindow(
     settings.size.width,
@@ -33,7 +35,11 @@ GLFWwindow* CreateWindow(
 
   // TODO: Error massage.
   if(!window)
+  {
+    // Anyway, we have only 1 window
+    std::abort();
     return nullptr;
+  }
 
   glfwSetWindowSizeLimits(
     window,
@@ -52,7 +58,7 @@ void DefaultResizeWindowCallback(
 )
 {
   Window* window = static_cast<Window*>(glfwGetWindowUserPointer(glfwWindow));
-  if(window && window->m_callback != nullptr)
+  if(window->m_callback != nullptr)
   {
     WindowResizeEvent event(width, height);
     window->m_callback(event);
@@ -62,11 +68,40 @@ void DefaultResizeWindowCallback(
 void DefaultCloseEvent(GLFWwindow* glfwWindow)
 {
   Window* window = static_cast<Window*>(glfwGetWindowUserPointer(glfwWindow));
-  if(window && window->m_callback != nullptr)
+  if(window->m_callback != nullptr)
   {
     WindowClosedEvent event;
     window->m_callback(event);
   }
+}
+
+void DefaultMouseMoveEvent(
+  GLFWwindow* glfwWindow,
+  double xPos,
+  double yPos
+)
+{
+  Window* window = static_cast<Window*>(glfwGetWindowUserPointer(glfwWindow));
+  if(window && window->m_callback != nullptr)
+  {
+    MouseMovedEvent event(xPos,yPos);
+    window->m_callback(event);
+  }
+}
+
+void DefaultKeyWindowEvent(
+  GLFWwindow* glfwWindow,
+  int key,
+  int scanMode,
+  int action,
+  int mods
+)
+{
+  Window* window = static_cast<Window*>(glfwGetWindowUserPointer(glfwWindow));
+  if(action == GLFW_PRESS)
+    window->GetInputMgr().SetKeyState(key, true);
+  else if(action == GLFW_RELEASE)
+    window->GetInputMgr().SetKeyState(key, false);
 }
 
 void Window::SetTitle(std::string_view title)
@@ -79,21 +114,22 @@ void Window::ResizeWindow(const WindowSize& size)
   glfwSetWindowSize(m_window, size.width, size.height);
 }
 
-WindowSize Window::GetWindowSize()
+WindowSize Window::GetWindowSize() const
 {
   WindowSize size;
   glfwGetWindowSize(m_window, &size.width, &size.height);
   return size;
 }
 
-void Window::GetWindowSize(WindowSize& size)
+void Window::GetWindowSize(WindowSize& size) const
 {
   glfwGetWindowSize(m_window, &size.width, &size.height);
 }
 
 void Window::SetWindowEventCallback(EventCallbacker callback)
 {
-  m_callback = std::move(callback);
+  m_inputManager.SetEventInputCallback(callback);
+  m_callback = callback;
 }
 
 InputManager& Window::GetInputMgr()
@@ -101,19 +137,34 @@ InputManager& Window::GetInputMgr()
   return m_inputManager;
 }
 
-void Window::SwapBuffer()
+void Window::SwapBuffer() const
 {
   glfwSwapBuffers(m_window);
 }
 
-void Window::MakeContext()
+void Window::MakeContext() const
 {
   glfwMakeContextCurrent(m_window);
 }
 
-bool Window::ShouldWindowClose()
+bool Window::ShouldWindowClose() const
 {
   return glfwWindowShouldClose(m_window);
+}
+
+void Window::SetCursorPos(double xPos, double yPos) const
+{
+  glfwSetCursorPos(m_window, xPos, yPos);
+}
+
+void Window::LockCursor() const
+{
+  glfwSetInputMode(m_window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+}
+
+void Window::UnlockCursor() const
+{
+  glfwSetInputMode(m_window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
 }
 
 Window::Window(const WindowSettings& settings)
@@ -123,6 +174,8 @@ Window::Window(const WindowSettings& settings)
   glfwSetWindowUserPointer(m_window, this);
   glfwSetFramebufferSizeCallback(m_window, DefaultResizeWindowCallback);
   glfwSetWindowCloseCallback(m_window, DefaultCloseEvent);
+  glfwSetKeyCallback(m_window, DefaultKeyWindowEvent);
+  glfwSetCursorPosCallback(m_window, DefaultMouseMoveEvent);
 }
 
 Window::~Window()
