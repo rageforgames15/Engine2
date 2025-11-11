@@ -14,6 +14,7 @@ find_package(glfw3 CONFIG REQUIRED)
 find_package(glm CONFIG REQUIRED)
 find_package(OpenGL REQUIRED)
 find_package(fmt CONFIG REQUIRED)
+find_package(Stb REQUIRED)
 
 add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/glad")
 
@@ -30,13 +31,14 @@ target_link_libraries(
   Glad
   fmt::fmt
   ${OpenGL_LIBRARIES} glfw
+  ${Stb_LIBRARIES}
 )
 target_include_directories(
   ${CMAKE_PROJECT_NAME}
   PUBLIC
   ${CMAKE_SOURCE_DIR}/include/
+  ${Stb_INCLUDE_DIRS}
 )
-add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/stb")
 
 if(DEFINED ENV{PRODUCT_BUILD})
   target_compile_definitions(${CMAKE_PROJECT_NAME} PUBLIC PRODUCT_BUILD)

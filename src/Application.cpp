@@ -154,8 +154,9 @@ void Application::Run()
     m_window.SetTitle(std::to_string(fps));
     DoMovement(dt);
     WindowSize windowSize = m_window.GetWindowSize();
+
     glm::mat4 projection = glm::perspective<float>(
-      90.f,
+      glm::radians(camera.GetFov()),
       windowSize.width / (float)windowSize.height,
       0.1f,
       100.f

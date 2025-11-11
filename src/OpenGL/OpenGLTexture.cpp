@@ -2,7 +2,7 @@
 #include "Asserts.h"
 #include "glad/gl.h"
 #include "OpenGL/OpenGLTexture.h"
-#include "stb/stb_image.h"
+#include "stb_image.h"
 #include <cstdint>
 
 static OpenGLTexture* s_bindedTextures[32];

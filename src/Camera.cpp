@@ -22,3 +22,14 @@ glm::mat4 Camera::GetViewMatrix()
 
   return glm::inverse(posMat * rotationMat);
 }
+
+void Camera::SetFov(float fov)
+{
+  m_fov = fov;
+}
+
+float Camera::GetFov() const
+{
+  return m_fov;
+}
+

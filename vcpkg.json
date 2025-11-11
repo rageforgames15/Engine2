@@ -1,7 +1,8 @@
 {
   "dependencies": [
+    "fmt",
     "glfw3",
     "glm",
-    "fmt"
+    "stb"
   ]
 }
