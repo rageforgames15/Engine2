@@ -2,10 +2,11 @@
 #include "glm/glm.hpp"
 #include "glm/ext.hpp"
 #include <cmath>
+#include <glm/ext/quaternion_common.hpp>
 
-static glm::vec3 worldFowardVec = glm::vec3(0,0,1);
+static glm::vec3 worldFowardVec = glm::vec3(0,0,-1);
 static glm::vec3 worldUpVec = glm::vec3(0,1,0);
-static glm::vec3 worldRightVec = glm::vec3(-1,0,0);
+static glm::vec3 worldRightVec = glm::vec3(1,0,0);
 
 struct SinAndCosStruct
 {
@@ -13,7 +14,6 @@ struct SinAndCosStruct
   float sin;
 };
 
-// NRO
 SinAndCosStruct CalculateSinAndCos(float x)
 {
   SinAndCosStruct val;
@@ -49,7 +49,8 @@ glm::mat4 Transform::ToMatrix()
 {
   glm::mat4 posMat(1.0f);
   posMat = glm::translate(posMat, position);
-  glm::mat4 rotMat = glm::mat4_cast(CalculateQuatRotationFromEuler(rotation));
+  glm::mat4 rotMat 
+    = glm::mat4_cast(CalculateQuatRotationFromEuler(rotation));
 
   return posMat * rotMat;
 }
@@ -66,8 +67,14 @@ glm::vec3 Transform::GetRightVec()
   return quat * worldRightVec;
 }
 
-glm ::vec3 Transform::GetUpVec()
+glm::vec3 Transform::GetUpVec()
 {
   glm::quat quat = CalculateQuatRotationFromEuler(rotation);
   return quat * worldUpVec;
 }
+
+glm::quat Transform::GetQuatRotation()
+{
+  return CalculateQuatRotationFromEuler(rotation);
+}
+

@@ -1,8 +1,12 @@
 #version 460 core
 
+layout(location = 0) uniform sampler2D u_tex;
+
+in vec2 o_UVPos;
+
 out vec4 out_color;
 
 void main()
 {
-  out_color = vec4(1.0f, 0.0f, 0.0f, 1.0f);
+  out_color = texture(u_tex, o_UVPos);
 }

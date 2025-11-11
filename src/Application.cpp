@@ -10,6 +10,8 @@
 #include "Events/EventDispatcher.h"
 #include "Events/WindowEvents.h"
 #include <Application.h>
+#include <GL/gl.h>
+#include <GL/glext.h>
 #include <GLFW/glfw3.h>
 #include <functional>
 #include "fmt/base.h"
@@ -25,6 +27,7 @@
 #include "glm/ext.hpp"
 #include "glm/glm.hpp"
 #include "Camera.h"
+#include "OpenGL/OpenGLTexture.h"
 
 Transform model;
 Camera camera;
@@ -68,55 +71,65 @@ void Application::Run()
   ); 
 
   Vertex vertices[] = {
-    // Передняя грань
-    {glm::vec3(-1.0f, -1.0f,  1.0f)},  // 0: нижний левый перед
-    {glm::vec3( 1.0f, -1.0f,  1.0f)},  // 1: нижний правый перед
-    {glm::vec3( 1.0f,  1.0f,  1.0f)},  // 2: верхний правый перед
-    {glm::vec3(-1.0f,  1.0f,  1.0f)},  // 3: верхний левый перед
-
     // Задняя грань
-    {glm::vec3(-1.0f, -1.0f, -1.0f)},  // 4: нижний левый зад
-    {glm::vec3( 1.0f, -1.0f, -1.0f)},  // 5: нижний правый зад
-    {glm::vec3( 1.0f,  1.0f, -1.0f)},  // 6: верхний правый зад
-    {glm::vec3(-1.0f,  1.0f, -1.0f)}   // 7: верхний левый зад
-  };
+    {glm::vec3(-0.5f, -0.5f, -0.5f), glm::vec2(0.0f, 0.0f)},
+    {glm::vec3( 0.5f, -0.5f, -0.5f), glm::vec2(1.0f, 0.0f)},
+    {glm::vec3( 0.5f,  0.5f, -0.5f), glm::vec2(1.0f, 1.0f)},
+    {glm::vec3( 0.5f,  0.5f, -0.5f), glm::vec2(1.0f, 1.0f)},
+    {glm::vec3(-0.5f,  0.5f, -0.5f), glm::vec2(0.0f, 1.0f)},
+    {glm::vec3(-0.5f, -0.5f, -0.5f), glm::vec2(0.0f, 0.0f)},
 
-  uint32_t indexis[] = {
     // Передняя грань
-    0, 1, 2,
-    2, 3, 0,
-    // Задняя грань
-    5, 4, 7,
-    7, 6, 5,
-    // Верхняя грань
-    3, 2, 6,
-    6, 7, 3,
-    // Нижняя грань
-    4, 5, 1,
-    1, 0, 4,
-    // Правая грань
-    1, 5, 6,
-    6, 2, 1,
+    {glm::vec3(-0.5f, -0.5f,  0.5f), glm::vec2(0.0f, 0.0f)},
+    {glm::vec3( 0.5f, -0.5f,  0.5f), glm::vec2(1.0f, 0.0f)},
+    {glm::vec3( 0.5f,  0.5f,  0.5f), glm::vec2(1.0f, 1.0f)},
+    {glm::vec3( 0.5f,  0.5f,  0.5f), glm::vec2(1.0f, 1.0f)},
+    {glm::vec3(-0.5f,  0.5f,  0.5f), glm::vec2(0.0f, 1.0f)},
+    {glm::vec3(-0.5f, -0.5f,  0.5f), glm::vec2(0.0f, 0.0f)},
+
     // Левая грань
-    4, 0, 3,
-    3, 7, 4
+    {glm::vec3(-0.5f,  0.5f,  0.5f), glm::vec2(1.0f, 0.0f)},
+    {glm::vec3(-0.5f,  0.5f, -0.5f), glm::vec2(1.0f, 1.0f)},
+    {glm::vec3(-0.5f, -0.5f, -0.5f), glm::vec2(0.0f, 1.0f)},
+    {glm::vec3(-0.5f, -0.5f, -0.5f), glm::vec2(0.0f, 1.0f)},
+    {glm::vec3(-0.5f, -0.5f,  0.5f), glm::vec2(0.0f, 0.0f)},
+    {glm::vec3(-0.5f,  0.5f,  0.5f), glm::vec2(1.0f, 0.0f)},
+
+    // Правая грань
+    {glm::vec3( 0.5f,  0.5f,  0.5f), glm::vec2(1.0f, 0.0f)},
+    {glm::vec3( 0.5f,  0.5f, -0.5f), glm::vec2(1.0f, 1.0f)},
+    {glm::vec3( 0.5f, -0.5f, -0.5f), glm::vec2(0.0f, 1.0f)},
+    {glm::vec3( 0.5f, -0.5f, -0.5f), glm::vec2(0.0f, 1.0f)},
+    {glm::vec3( 0.5f, -0.5f,  0.5f), glm::vec2(0.0f, 0.0f)},
+    {glm::vec3( 0.5f,  0.5f,  0.5f), glm::vec2(1.0f, 0.0f)},
+
+    // Нижняя грань
+    {glm::vec3(-0.5f, -0.5f, -0.5f), glm::vec2(0.0f, 1.0f)},
+    {glm::vec3( 0.5f, -0.5f, -0.5f), glm::vec2(1.0f, 1.0f)},
+    {glm::vec3( 0.5f, -0.5f,  0.5f), glm::vec2(1.0f, 0.0f)},
+    {glm::vec3( 0.5f, -0.5f,  0.5f), glm::vec2(1.0f, 0.0f)},
+    {glm::vec3(-0.5f, -0.5f,  0.5f), glm::vec2(0.0f, 0.0f)},
+    {glm::vec3(-0.5f, -0.5f, -0.5f), glm::vec2(0.0f, 1.0f)},
+
+    // Верхняя грань
+    {glm::vec3(-0.5f,  0.5f, -0.5f), glm::vec2(0.0f, 1.0f)},
+    {glm::vec3( 0.5f,  0.5f, -0.5f), glm::vec2(1.0f, 1.0f)},
+    {glm::vec3( 0.5f,  0.5f,  0.5f), glm::vec2(1.0f, 0.0f)},
+    {glm::vec3( 0.5f,  0.5f,  0.5f), glm::vec2(1.0f, 0.0f)},
+    {glm::vec3(-0.5f,  0.5f,  0.5f), glm::vec2(0.0f, 0.0f)},
+    {glm::vec3(-0.5f,  0.5f, -0.5f), glm::vec2(0.0f, 1.0f)}
   };
 
   OpenGLVAO vao;
   vao.Bind();
   OpenGLVBO vbo;
   vbo.Bind();
-  OpenGLEBO ebo;
-  ebo.Bind();
 
   vbo.SetData(vertices, sizeof(vertices), GL_STATIC_DRAW);
   vbo.SetAttribute(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), 0);
-
-  ebo.SetData(indexis, sizeof(indexis), GL_STATIC_DRAW);
+  vbo.SetAttribute(1, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)(3 * sizeof(float)));
 
   vao.Unbind();
-
-  ebo.Unbind();
   vbo.Unbind();
 
   shader.Use();
@@ -128,10 +141,13 @@ void Application::Run()
   int32_t projMatLoc{glGetUniformLocation(shader.GetID(),"u_projMat")};
   m_window.LockCursor();
 
+  OpenGLTexture wood("res/images/wood.jpg", GL_TEXTURE_2D);
+  //wood.BindTexture(0, GL_TEXTURE_2D);
+
   while(IsRunning())
   {
     m_window.SwapBuffer();
-
+    glClearColor(1.0f,1.0f,1.0f,1.0f);
     time.NewTimeStep();
     float dt = time.GetInSeconds();
     float fps = 1 / time.GetInSeconds();
@@ -139,20 +155,24 @@ void Application::Run()
     DoMovement(dt);
     WindowSize windowSize = m_window.GetWindowSize();
     glm::mat4 projection = glm::perspective<float>(
-      45.f,
+      90.f,
       windowSize.width / (float)windowSize.height,
       0.1f,
       100.f
     );
 
+    model.rotation.x += 90.f * dt;
+    model.rotation.y += 45.f * dt;
     glUniformMatrix4fv(modelMatLoc,1,GL_FALSE, glm::value_ptr(model.ToMatrix()));
     glUniformMatrix4fv(viewMatLoc,1, GL_FALSE, glm::value_ptr(camera.GetViewMatrix()));
     glUniformMatrix4fv(projMatLoc,1, GL_FALSE, glm::value_ptr(projection));
 
     vao.Bind();
-    glClear(GL_COLOR_BUFFER_BIT);
-    glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
+    wood.BindTexture(0);
 
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    glDrawArrays(GL_TRIANGLES,0,36);
+    glUniform1i(glGetUniformLocation(shader.GetID(),"u_tex"), 0);
     // Render here
     // And layers ))
     //xengine_print("CTF:\n Pos:{},{},{}\nRot:{},{},{}\n",view.position.x,view.position.y,view.position.z,view.rotation.x,view.rotation.y,view.rotation.z);
@@ -202,8 +222,8 @@ bool Application::OnMouseMove(const MouseMovedEvent& event)
   lastMouseXPos = newXPos;
   lastMouseYPos = newYPos;
 
-  view.rotation.x += elapseYPos * 0.15f;
-  view.rotation.y += elapseXPos * 0.15f;
+  view.rotation.x -= elapseYPos * 0.125f;
+  view.rotation.y += elapseXPos * 0.125f;
 
   if(view.rotation.x > 89.f)
     view.rotation.x = 89.f;
@@ -240,5 +260,6 @@ Application::Application(ApplicationSpecific& spec)
 
   m_window.MakeContext();
   gladLoadGL(glfwGetProcAddress);
+  glEnable(GL_DEPTH_TEST);
 }
 

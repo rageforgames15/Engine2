@@ -8,7 +8,7 @@ int main()
 {
   glfwInit();
 
-  // Debugger thing, ensure it print root project not build folder
+  // Debugger thing,
   xengine_print("Current working directory {}\n", std::filesystem::current_path().c_str());
 
   ApplicationSpecific settings;

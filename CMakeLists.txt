@@ -36,6 +36,7 @@ target_include_directories(
   PUBLIC
   ${CMAKE_SOURCE_DIR}/include/
 )
+add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/stb")
 
 if(DEFINED ENV{PRODUCT_BUILD})
   target_compile_definitions(${CMAKE_PROJECT_NAME} PUBLIC PRODUCT_BUILD)

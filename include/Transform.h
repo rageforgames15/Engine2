@@ -10,4 +10,6 @@ struct Transform
   glm::vec3 GetRightVec();
   glm::vec3 GetFowardVec();
   glm::vec3 GetUpVec();
+
+  glm::quat GetQuatRotation();
 };

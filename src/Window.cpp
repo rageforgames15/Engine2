@@ -176,6 +176,7 @@ Window::Window(const WindowSettings& settings)
   glfwSetWindowCloseCallback(m_window, DefaultCloseEvent);
   glfwSetKeyCallback(m_window, DefaultKeyWindowEvent);
   glfwSetCursorPosCallback(m_window, DefaultMouseMoveEvent);
+  glfwFocusWindow(m_window);
 }
 
 Window::~Window()
