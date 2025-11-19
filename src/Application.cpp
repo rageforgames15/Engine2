@@ -28,6 +28,7 @@
 #include "glm/glm.hpp"
 #include "Camera.h"
 #include "OpenGL/OpenGLTexture.h"
+#include <cstddef>
 
 Transform model;
 Camera camera;
@@ -55,6 +56,16 @@ void DoMovement(float dt)
     view.position += view.GetRightVec() * -movementSpeed * dt;
   if(input.IsKeyPressed(GLFW_KEY_D))
     view.position += view.GetRightVec() * movementSpeed * dt;
+  if(input.IsKeyPressed(GLFW_KEY_Q))
+    camera.SetFov(camera.GetFov() + 10 * dt);
+  if(input.IsKeyPressed(GLFW_KEY_E))
+    camera.SetFov(camera.GetFov() - 10 * dt);
+  if(input.IsKeyPressed(GLFW_KEY_LEFT_CONTROL))
+    view.position.y -= movementSpeed * dt;
+  if(input.IsKeyPressed(GLFW_KEY_SPACE))
+    view.position.y += movementSpeed * dt;
+
+  camera.SetFov(std::clamp(camera.GetFov(), 10.f, 179.f));
 }
 
 void Application::Run()
@@ -127,7 +138,7 @@ void Application::Run()
 
   vbo.SetData(vertices, sizeof(vertices), GL_STATIC_DRAW);
   vbo.SetAttribute(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), 0);
-  vbo.SetAttribute(1, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)(3 * sizeof(float)));
+  vbo.SetAttribute(1, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), offsetof(Vertex, uvPos));
 
   vao.Unbind();
   vbo.Unbind();
@@ -147,7 +158,7 @@ void Application::Run()
   while(IsRunning())
   {
     m_window.SwapBuffer();
-    glClearColor(1.0f,1.0f,1.0f,1.0f);
+    glClearColor(0.0f,0.0f,0.0f,1.0f);
     time.NewTimeStep();
     float dt = time.GetInSeconds();
     float fps = 1 / time.GetInSeconds();
@@ -158,7 +169,7 @@ void Application::Run()
     glm::mat4 projection = glm::perspective<float>(
       glm::radians(camera.GetFov()),
       windowSize.width / (float)windowSize.height,
-      0.1f,
+      0.025f,
       100.f
     );
 

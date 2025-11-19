@@ -3,9 +3,12 @@
 #include "Window.h"
 #include <GLFW/glfw3.h>
 #include <filesystem>
+#include "FileLogger.h"
 
 int main()
 {
+  FileLogger logger(false);
+
   glfwInit();
 
   // Debugger thing,

@@ -17,7 +17,7 @@ public:
     GLenum type,
     bool normalize,
     uint32_t stride,
-    const void* offset
+    uint64_t offset
   );
 
   OpenGLVBO();

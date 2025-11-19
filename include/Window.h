@@ -65,7 +65,6 @@ public:
   ~Window();
 private:
   InputManager m_inputManager;
-  GLFWwindow* m_window;
   EventCallbacker m_callback;
+  GLFWwindow* m_window;
 };
-

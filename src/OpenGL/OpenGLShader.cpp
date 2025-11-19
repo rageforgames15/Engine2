@@ -7,6 +7,9 @@
 #include <expected>
 #include <string>
 #include "fmt/base.h"
+#include "fmt/core.h"
+#include <filesystem>
+#include "FileLogger.h"
 
 std::expected<uint32_t, std::string> CompileShader(
   std::string_view shaderSource,
@@ -26,7 +29,7 @@ std::expected<uint32_t, std::string> CompileShader(
     glGetShaderInfoLog(shader, res, nullptr, errorMsg.data());
     return std::unexpected(std::move(errorMsg));
   }
-
+  
   return shader;
 }
 
@@ -39,8 +42,7 @@ std::expected<uint32_t, std::string> CreateProgram(
     = CompileShader(vertexShaderCode, GL_VERTEX_SHADER)
     .or_else([](const std::string& error) {
         // Current time we print it. Later save it to log file 
-        fmt::print("Failed to compile vertex shader {}\n", error);
-        std::abort();
+        XELogger::ErrorAndCrash(error);
         return std::expected<uint32_t, std::string>{0};
       }
     );
@@ -48,8 +50,7 @@ std::expected<uint32_t, std::string> CreateProgram(
   auto fragmentShaderRes
     = CompileShader(fragmentShaderCode, GL_FRAGMENT_SHADER)
     .or_else([](const std::string& error) {
-        fmt::print("Failed to compile fragment shader {}\n", error);
-        std::abort();
+        XELogger::ErrorAndCrash(error);
         return std::expected<uint32_t, std::string>{0};
       }
     );
@@ -64,15 +65,17 @@ std::expected<uint32_t, std::string> CreateProgram(
 
   int32_t res;
   glGetProgramiv(programID, GL_LINK_STATUS, &res);
+  
+  glDeleteShader(vertexShaderID);
+  glDeleteShader(fragmentShaderID);
+
   if(!res)
   {
     glGetProgramiv(programID, GL_INFO_LOG_LENGTH, &res);
     std::string msg(res, '\0');
     glGetProgramInfoLog(programID, res, nullptr, msg.data());
     return std::unexpected(std::move(msg));
-  }
-  glDeleteShader(vertexShaderID);
-  glDeleteShader(fragmentShaderID);
+  }  
 
   return programID;
 }
@@ -129,7 +132,7 @@ OpenGLShader::OpenGLShader(
 
   if(!programRes)
   {
-    fmt::print("Failed to create shader program, {}", programRes.error());
+    XELogger::Error(fmt::format("Failed to create shader program, {}", programRes.error()));
     return;
   }
   m_programID = programRes.value();

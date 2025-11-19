@@ -38,7 +38,7 @@ void OpenGLVBO::SetAttribute(
   uint32_t type,
   bool normalize,
   uint32_t stride,
-  const void* offset
+  uint64_t offset
 )
 {
   if(s_bindedVBOBuffer != m_id)
@@ -50,7 +50,7 @@ void OpenGLVBO::SetAttribute(
     type,
     normalize,
     stride,
-    offset
+    (const void*)offset
   );
   glEnableVertexAttribArray(index);
 }

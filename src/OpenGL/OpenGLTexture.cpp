@@ -5,9 +5,6 @@
 #include "stb_image.h"
 #include <cstdint>
 
-static OpenGLTexture* s_bindedTextures[32];
-static uint8_t s_currentUnit{};
-
 void OpenGLTexture::BindTexture(
   uint8_t textureUnit
 )
@@ -15,8 +12,6 @@ void OpenGLTexture::BindTexture(
   xengine_assertmsg(textureUnit < 32, "Texture units must be smaller than 32");
   glActiveTexture(GL_TEXTURE0 + textureUnit);
   glBindTexture(m_type, m_id);
-  s_currentUnit = textureUnit;
-  s_bindedTextures[textureUnit] = this;
 }
 
 uint32_t OpenGLTexture::GetID() const
@@ -56,32 +51,19 @@ OpenGLTexture::OpenGLTexture(std::string_view path, uint32_t type)
     data
   );
 
-  glTexParameteri(type, GL_TEXTURE_WRAP_S,GL_MIRRORED_REPEAT);
-  glTexParameteri(type, GL_TEXTURE_WRAP_T,GL_MIRRORED_REPEAT);
-  glTexParameteri(type, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-  glTexParameteri(type, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-
   glGenerateMipmap(type);
-  if(s_bindedTextures[s_currentUnit])
-    glBindTexture(
-      s_bindedTextures[s_currentUnit]->m_type,
-      s_bindedTextures[s_currentUnit]->m_id
-    );
+
+  glTexParameteri(type, GL_TEXTURE_WRAP_S,GL_REPEAT);
+  glTexParameteri(type, GL_TEXTURE_WRAP_T,GL_REPEAT);
+  glTexParameteri(type, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+  glTexParameteri(type, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
   stbi_image_free(data);
+  glBindTexture(GL_TEXTURE_2D, 0);
 }
 
 OpenGLTexture::~OpenGLTexture()
 {
   glDeleteTextures(1,&m_id);
-  for(size_t i{}; i < 32; ++i)
-  {
-    if(s_bindedTextures[i] == this)
-    {
-      s_bindedTextures[i] = nullptr;
-      break;
-    }
-  }
 }
 
