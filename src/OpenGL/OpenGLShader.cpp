@@ -1,81 +1,89 @@
 #include "glad/gl.h"
+#include "FileLogger.h"
+#include "EnginePrint.h"
 #include "OpenGL/OpenGLShader.h"
-#include <cstdint>
-#include <cstdio>
-#include <cstdlib>
-#include <string_view>
 #include <expected>
 #include <string>
-#include "fmt/base.h"
-#include "fmt/core.h"
-#include <filesystem>
-#include "FileLogger.h"
+#include <string_view>
+#include <utility>
+#include <cstdio>
+#include "FileIO.h"
 
+enum class ShaderType : uint32_t
+{
+  VERTEX = GL_VERTEX_SHADER,
+  FRAGMENT = GL_FRAGMENT_SHADER
+};
+
+[[nodiscard]]
 std::expected<uint32_t, std::string> CompileShader(
-  std::string_view shaderSource,
-  uint32_t type
+  const std::string_view shaderCode,
+  ShaderType shaderType
 )
 {
-  uint32_t shader = glCreateShader(type);
-  const char* sourcePtr = shaderSource.data();
-  glShaderSource(shader, 1, &sourcePtr, NULL);
-  glCompileShader(shader);
-  int32_t res;
-  glGetShaderiv(shader, GL_COMPILE_STATUS, &res);
-  if(!res)
-  {
-    glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &res);
-    std::string errorMsg(res, '\0');
-    glGetShaderInfoLog(shader, res, nullptr, errorMsg.data());
-    return std::unexpected(std::move(errorMsg));
-  }
+  uint32_t shaderID = glCreateShader(std::to_underlying(shaderType));
+  const char* data = shaderCode.data();
   
-  return shader;
+  glShaderSource(
+    shaderID,
+    1,
+    &data,
+    nullptr
+  );
+
+  glCompileShader(shaderID);
+
+  int32_t result{};
+  glGetShaderiv(shaderID, GL_COMPILE_STATUS, &result);
+  if(!result)
+  {
+    glGetShaderiv(shaderID, GL_INFO_LOG_LENGTH, &result);
+    std::string msg(result, '\0');
+    glGetShaderInfoLog(shaderID, result, nullptr, msg.data());
+    return std::unexpected(std::move(msg));
+  }
+
+  return shaderID;
 }
 
+[[nodiscard]]
 std::expected<uint32_t, std::string> CreateProgram(
-  std::string_view vertexShaderCode,
-  std::string_view fragmentShaderCode
+  std::string_view vertexShaderSource,
+  std::string_view fragmentShaderSource
 )
 {
-  auto vertexShaderRes
-    = CompileShader(vertexShaderCode, GL_VERTEX_SHADER)
-    .or_else([](const std::string& error) {
-        // Current time we print it. Later save it to log file 
-        XELogger::ErrorAndCrash(error);
-        return std::expected<uint32_t, std::string>{0};
-      }
-    );
+  auto vertexShader 
+    = CompileShader(vertexShaderSource, ShaderType::VERTEX);
+  auto fragmentShader 
+    = CompileShader(fragmentShaderSource, ShaderType::FRAGMENT);
 
-  auto fragmentShaderRes
-    = CompileShader(fragmentShaderCode, GL_FRAGMENT_SHADER)
-    .or_else([](const std::string& error) {
-        XELogger::ErrorAndCrash(error);
-        return std::expected<uint32_t, std::string>{0};
-      }
-    );
+  if(!vertexShader.has_value()) 
+    return vertexShader;
 
-  uint32_t vertexShaderID = vertexShaderRes.value();
-  uint32_t fragmentShaderID = fragmentShaderRes.value();
+  if(!fragmentShader.has_value()) 
+    return fragmentShader;
+
+  uint32_t vertexShaderID = vertexShader.value();
+  uint32_t fragmentShaderID = fragmentShader.value();
 
   uint32_t programID = glCreateProgram();
   glAttachShader(programID, vertexShaderID);
   glAttachShader(programID, fragmentShaderID);
+
   glLinkProgram(programID);
 
-  int32_t res;
-  glGetProgramiv(programID, GL_LINK_STATUS, &res);
-  
+  int32_t result{};
+  glGetProgramiv(programID, GL_LINK_STATUS, &result);
+  if(!result)
+  {
+    glGetProgramiv(programID, GL_INFO_LOG_LENGTH, &result);
+    std::string msg(result, '\0');
+    glGetProgramInfoLog(programID, result, nullptr, msg.data());
+    return std::unexpected(std::move(msg));
+  }
+
   glDeleteShader(vertexShaderID);
   glDeleteShader(fragmentShaderID);
-
-  if(!res)
-  {
-    glGetProgramiv(programID, GL_INFO_LOG_LENGTH, &res);
-    std::string msg(res, '\0');
-    glGetProgramInfoLog(programID, res, nullptr, msg.data());
-    return std::unexpected(std::move(msg));
-  }  
 
   return programID;
 }
@@ -90,52 +98,40 @@ uint32_t OpenGLShader::GetID()
   return m_programID;
 }
 
-std::string GetBinaryDataFromFile(std::string_view filePath)
-{
-  FILE* file = fopen(filePath.data(), "rb");
-  if(!file)
-  {
-    perror("Failed to open file");
-    return "";
-  }
-  fseek(file, 0, SEEK_END);
-  size_t size = ftell(file);
-  fseek(file, 0, SEEK_SET);
-
-  std::string data(size, '\0');
-  fread(data.data(), sizeof(char), size, file);
-
-  fclose(file);
-
-  return data;
-}
-
-void OpenGLShader::UnbindShader()
-{
-  glUseProgram(0);
-}
-
 OpenGLShader::OpenGLShader(
   std::string_view vertexShaderFilePath,
-  std::string_view fragmentShaderFilePath
-)
+  std::string_view fragmenShaderFilePath
+) : m_programID(0)
 {
-  std::string vertexShaderSrcCode
-    = GetBinaryDataFromFile(vertexShaderFilePath);
-  std::string fragmentShaderSrcCode
-    = GetBinaryDataFromFile(fragmentShaderFilePath);
-
-  auto programRes = CreateProgram(
-    vertexShaderSrcCode,
-    fragmentShaderSrcCode
+  FILEERROR fileError;
+  XEngineFile vertexFile(
+    vertexShaderFilePath,
+    std::to_underlying(FILEOPENFLAGS::READ),
+    fileError
   );
-
-  if(!programRes)
+  if(fileError != FILEERROR::NONE)
   {
-    XELogger::Error(fmt::format("Failed to create shader program, {}", programRes.error()));
-    return;
+    std::string msg("Failed to open file: ");
+    msg += vertexShaderFilePath;
+    XELogger::Error(msg);
   }
-  m_programID = programRes.value();
+  std::string vertexSourceCode = vertexFile.ReadAllData();
+  XEngineFile fragmentFile(
+    fragmenShaderFilePath,
+    std::to_underlying(FILEOPENFLAGS::READ),
+    fileError
+  );
+  if(fileError != FILEERROR::NONE)
+  {
+    std::string msg("Failed to open file: ");
+    msg += fragmenShaderFilePath;
+    XELogger::Error(msg);
+  }
+  std::string fragmentSourceCode = fragmentFile.ReadAllData();
+
+  auto programRes = CreateProgram(vertexSourceCode, fragmentSourceCode);
+  if(!programRes.has_value()) XELogger::Error(programRes.error());
+  else m_programID = programRes.value();
 }
 
 OpenGLShader::~OpenGLShader()

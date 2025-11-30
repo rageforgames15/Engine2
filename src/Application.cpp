@@ -197,12 +197,6 @@ void Application::Run()
 bool Application::OnWindowResize(const WindowResizeEvent& event)
 {
   glViewport(0, 0, event.GetWidth(), event.GetHeight());
-  xengine_print(
-    "New window size. Width {}, Height {}\n",
-    event.GetWidth(),
-    event.GetHeight()
-  );
-
   return true;
 }
 
@@ -259,8 +253,6 @@ void Application::OnEvent(Event& event)
   dispatcher.Dispatch<
     EventType::MOUSE_MOVE,
     MouseMovedEvent> (BIND(&Application::OnMouseMove));
-
-  xengine_print("Event was dispatched\n");
 }
 
 Application::Application(ApplicationSpecific& spec)
@@ -272,6 +264,7 @@ Application::Application(ApplicationSpecific& spec)
 
   m_window.MakeContext();
   gladLoadGL(glfwGetProcAddress);
+  glEnable(GL_MULTISAMPLE);
   glEnable(GL_DEPTH_TEST);
 }
 

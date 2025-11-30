@@ -29,7 +29,7 @@
         "CMAKE_BUILD_TYPE": "Release"
       },
       "environment": {
-        "PRODUCT_BUILD": ""
+        "PRODUCT_BUILD": "1"
       }
     }
   ],

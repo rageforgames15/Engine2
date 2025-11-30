@@ -23,4 +23,3 @@ float Timestep::GetInSeconds()
 Timestep::Timestep()
   : m_lastTimePoint(std::chrono::steady_clock::now())
 {}
-

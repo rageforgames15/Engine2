@@ -41,6 +41,6 @@ target_include_directories(
 )
 
 if(DEFINED ENV{PRODUCT_BUILD})
-  target_compile_definitions(${CMAKE_PROJECT_NAME} PUBLIC PRODUCT_BUILD)
+  target_compile_definitions(${CMAKE_PROJECT_NAME} PUBLIC PRODUCT_BUILD=1)
   message(STATUS "Product build")
 endif()

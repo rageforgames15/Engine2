@@ -8,6 +8,7 @@
 #include <fmt/base.h>
 #include <functional>
 #include <string_view>
+#include "FileLogger.h"
 
 void glfwError(int code, const char* desc)
 {
@@ -37,7 +38,7 @@ GLFWwindow* CreateWindow(
   if(!window)
   {
     // Anyway, we have only 1 window
-    std::abort();
+    XELogger::ErrorAndCrash("Failed to open window");
     return nullptr;
   }
 
@@ -82,7 +83,7 @@ void DefaultMouseMoveEvent(
 )
 {
   Window* window = static_cast<Window*>(glfwGetWindowUserPointer(glfwWindow));
-  if(window && window->m_callback != nullptr)
+  if(window->m_callback != nullptr)
   {
     MouseMovedEvent event(xPos,yPos);
     window->m_callback(event);
@@ -102,6 +103,33 @@ void DefaultKeyWindowEvent(
     window->GetInputMgr().SetKeyState(key, true);
   else if(action == GLFW_RELEASE)
     window->GetInputMgr().SetKeyState(key, false);
+}
+
+void DefaultFocusEvent(
+  GLFWwindow* glfwWindow,
+  int focused
+)
+{
+  Window* window = static_cast<Window*>(glfwGetWindowUserPointer(glfwWindow));
+  window->m_isFocused = focused;
+  if(window->m_callback != nullptr)
+  {
+    if(focused)
+    {
+      WindowFocusedEvent event;
+      window->m_callback(event);
+    }
+    else
+    {
+      WindowReleaseEvent event;
+      window->m_callback(event);
+    }
+  }
+}
+
+bool Window::IsFocused() const
+{
+  return m_isFocused;
 }
 
 void Window::SetTitle(std::string_view title)
@@ -168,10 +196,11 @@ void Window::UnlockCursor() const
 }
 
 Window::Window(const WindowSettings& settings)
-  : m_window(CreateWindow(settings))
+  : m_window(CreateWindow(settings)),
+  m_isFocused(true)
 {
-  xengine_assert(m_window != nullptr);
   glfwSetWindowUserPointer(m_window, this);
+  glfwSetWindowFocusCallback(m_window, DefaultFocusEvent);
   glfwSetFramebufferSizeCallback(m_window, DefaultResizeWindowCallback);
   glfwSetWindowCloseCallback(m_window, DefaultCloseEvent);
   glfwSetKeyCallback(m_window, DefaultKeyWindowEvent);
@@ -183,4 +212,3 @@ Window::~Window()
 {
   glfwDestroyWindow(m_window);
 }
-

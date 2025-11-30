@@ -1,5 +1,6 @@
 #include "fmt/base.h"
 #include "FileLogger.h"
+#include "EnginePrint.h"
 #include "Asserts.h"
 #include <cstdint>
 #include <string>
@@ -36,7 +37,7 @@ inline void Log(
 
 void FileLogger::Write(std::string_view str)
 {
-  fmt::print("{}\n", str);  
+  xengine_print("{}\n", str);
   if(m_isBlocked || m_file == nullptr) return;
   fwrite(str.data(), sizeof(uint8_t), str.size(), m_file);
   fwrite("\n",1,1, m_file);
@@ -49,8 +50,8 @@ void FileLogger::SetShouldBeBlocked(bool blocked)
 
 void FileLogger::Flush()
 {
-  if(!m_file) return;
-  fclose(m_file);
+  if(m_file)
+    fclose(m_file);
   m_file = fopen("log.txt","a");
 }
 

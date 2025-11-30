@@ -24,3 +24,23 @@ class WindowClosedEvent
 public:
   WindowClosedEvent() : Event(EventType::WINDOW_CLOSED) {}
 };
+
+class WindowFocusedEvent
+  : public Event
+{
+public:
+  WindowFocusedEvent()
+    : Event(EventType::WIDNOW_FOCUSED)
+  {}
+};
+
+class WindowReleaseEvent
+  : public Event
+{
+public:
+  WindowReleaseEvent()
+    : Event(EventType::WINDOW_RELEASED)
+  {}
+};
+
+

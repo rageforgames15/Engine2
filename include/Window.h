@@ -38,6 +38,11 @@ public:
     double xPos,
     double yPos
   );
+  friend
+  void DefaultFocusEvent(
+    GLFWwindow* glfwWindow,
+    int focused
+  );
 
 public:
   void SetTitle(std::string_view title);
@@ -55,6 +60,7 @@ public:
   void MakeContext() const;
 
   bool ShouldWindowClose() const;
+  bool IsFocused() const;
 
   void SetCursorPos(double xPos, double yPos) const;
 
@@ -67,4 +73,5 @@ private:
   InputManager m_inputManager;
   EventCallbacker m_callback;
   GLFWwindow* m_window;
+  bool m_isFocused;
 };
