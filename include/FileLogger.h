@@ -12,7 +12,7 @@ public:
   // just reopen file, nothing more
   void Flush();
   
-  const bool IsBlocked() const;
+  bool IsBlocked() const;
   static FileLogger& GetLogger();
 
   FileLogger(bool blockFileLogger);
@@ -22,8 +22,8 @@ public:
   FileLogger(const FileLogger&) = delete;
   void operator=(const FileLogger&) = delete;
 private:
-  FILE* m_file;
-  bool m_isBlocked;
+  FILE* m_file = nullptr;
+  bool m_isBlocked = false;
 };
 
 namespace XELogger

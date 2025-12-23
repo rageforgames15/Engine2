@@ -55,7 +55,7 @@ void FileLogger::Flush()
   m_file = fopen("log.txt","a");
 }
 
-const bool FileLogger::IsBlocked() const
+bool FileLogger::IsBlocked() const
 {
   return m_isBlocked;
 }
@@ -67,8 +67,8 @@ FileLogger& FileLogger::GetLogger()
 }
 
 FileLogger::FileLogger(bool blockFileLogger)
-  : m_isBlocked(blockFileLogger),
-    m_file(fopen("log.txt","w"))
+  : m_file(fopen("log.txt","w")),
+    m_isBlocked(blockFileLogger)
 {
   s_logger = this;
 }

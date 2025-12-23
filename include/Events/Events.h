@@ -18,15 +18,15 @@ class Event
 public:
   friend class EventDispatcher;
 public:
-  const EventType GetType() const {return m_type;}
+  EventType GetType() const {return m_type;}
 
   Event(const EventType type)
-  : m_ishandled(false), m_type(type)
+  : m_type(type), m_ishandled(false)
   {}
   ~Event() = default;
 private:
-  const EventType m_type;
-  bool m_ishandled;
+  const EventType m_type = EventType::NONE;
+  bool m_ishandled = false;
 };
 
 typedef std::function<void(Event&)> EventCallbacker;

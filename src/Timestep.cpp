@@ -1,23 +1,29 @@
 #include "Timestep.h"
 #include <chrono>
 
+std::chrono::duration<float> Timestep::GetElapseTime()
+{
+  auto currentTime = std::chrono::steady_clock::now();
+  return currentTime - m_lastTimePoint;
+}
+
 void Timestep::NewTimeStep()
 {
   auto currentTime = std::chrono::steady_clock::now();
-  auto elapseTime = currentTime - m_lastTimePoint;
   m_lastTimePoint = currentTime;
-
-  m_dt = std::chrono::duration<float>(elapseTime).count();
 }
 
 float Timestep::GetInMilliseconds()
 {
-  return m_dt * 1000;
+  return
+    std::chrono::duration_cast<std::chrono::milliseconds>(
+      GetElapseTime()
+    ).count();
 }
 
 float Timestep::GetInSeconds()
 {
-  return m_dt;
+  return GetElapseTime().count();
 }
 
 Timestep::Timestep()

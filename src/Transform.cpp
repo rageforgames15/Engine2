@@ -42,7 +42,7 @@ glm::quat CalculateQuatRotationFromEuler(const glm::vec3& euler)
     -
     (xSinCos.sin * ySinCos.sin * zSinCos.cos)
   );
-  return quat;
+  return glm::normalize(quat);
 }
 
 glm::mat4 Transform::ToMatrix()

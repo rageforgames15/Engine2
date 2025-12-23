@@ -10,17 +10,17 @@ Transform& Camera::GetTransform()
 
 glm::mat4 Camera::GetViewMatrix()
 {
-  // return glm::lookAt(
-  //   m_transform.position,
-  //   m_transform.position + m_transform.GetFowardVec(),
-  //   glm::vec3(0,1,0)
-  // );
-  glm::mat4 rotationMat
+  return glm::lookAt(
+    m_transform.position,
+    m_transform.position + m_transform.GetFowardVec(),
+    m_transform.GetUpVec()
+  );
+  /*glm::mat4 rotationMat
     = glm::mat4_cast(m_transform.GetQuatRotation());
   glm::mat4 posMat
     = glm::translate(glm::mat4(1.0f),  m_transform.position);
 
-  return glm::inverse(posMat * rotationMat);
+  return glm::inverse(posMat * rotationMat);*/
 }
 
 void Camera::SetFov(float fov)

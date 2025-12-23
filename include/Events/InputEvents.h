@@ -6,10 +6,10 @@ class KeyEvent
   : public Event
 {
 public:
-  const int GetKey() const {return m_key;}
+  int GetKey() const {return m_key;}
 
   KeyEvent(int key, EventType eventType)
-    : m_key(key), Event(eventType)
+    : Event(eventType), m_key(key)
   {}
 
 private:

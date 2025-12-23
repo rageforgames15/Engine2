@@ -6,6 +6,7 @@
 #include "FileLogger.h"
 #include "FileIO.h"
 #include <utility>
+#include "Profile.h"
 
 struct A
 {
@@ -18,6 +19,7 @@ struct A
 int main()
 {
   // THIS SHOULD LIVE ENTIRE PROGRAM, DONT PUT IT TO APPLICATION
+  XENGINE_START_PROFILE("Init engine");
   FileLogger logger(false);
   glfwInit();
 
@@ -37,6 +39,7 @@ int main()
   };
 
   Application app(settings);
+  XENGINE_END_PROFILE("Init engine");
   app.Run();
   return 0; 
 }
