@@ -5,7 +5,7 @@
 
 // how i should work with fukcing windows API on fucking linux???
 #ifdef WIN32
-#include <windows.h>
+#include <Windows.h>
 #define ASSERTATION_WIN_BUFFER_SIZE 1 << 9
 
 #endif
@@ -30,8 +30,8 @@
 #define xengine_assert(expr) \
                     if(!(expr)) \
                     { \
-                      char buff[ASSERTATION_WIN_BUFFER_SIZE];
-                      snprintf(&buff, sizeof(buff), "Assertion failed: %s, %d, %s\n", #expr, __LINE__, __FILE__);
+                      char buff[ASSERTATION_WIN_BUFFER_SIZE]{}; \
+                      snprintf(buff, sizeof(buff), "Assertion failed: %s, %d, %s\n", #expr, __LINE__, __FILE__); \
                       MessageBoxA(NULL, buff, "Assertion failed", MB_OK | MB_ICONERROR); \
                       printf("Assertion failed: %s, %d, %s \n", #expr, __LINE__, __FILE__); \
                       std::abort(); \
@@ -40,8 +40,8 @@
 #define xengine_assertmsg(expr, msg) \
                     if(!(expr)) \
                     { \
-                      char buff[ASSERTATION_WIN_BUFFER_SIZE];
-                      snprintf(&buff, sizeof(buff), "Assertion failed: %s, %s, %d, %s\n", #expr, msg, __LINE__, __FILE__);
+                      char buff[ASSERTATION_WIN_BUFFER_SIZE]{}; \
+                      snprintf(buff, sizeof(buff), "Assertion failed: %s, %s, %d, %s\n", #expr, msg, __LINE__, __FILE__); \
                       MessageBoxA(NULL, buff, "Assertion failed", MB_OK | MB_ICONERROR); \
                       printf("Assertion failed: %s, %d, %s \n", #expr, __LINE__, __FILE__); \
                       std::abort(); \

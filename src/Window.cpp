@@ -10,6 +10,10 @@
 #include <string_view>
 #include "FileLogger.h"
 
+#ifdef CreateWindow
+#undef CreateWindow
+#endif
+
 void glfwError(int code, const char* desc)
 {
   fmt::print("Code: {}, Desc: {}", code, desc);

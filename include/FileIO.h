@@ -4,6 +4,7 @@
 #include <cstdint>
 #include <expected>
 #include "MacroUtils.h"
+#include <string>
 
 enum class FILEERROR : uint8_t
 {

@@ -8,6 +8,10 @@
 #include <cstring>
 #include <array>
 
+#ifdef ERROR
+#undef ERROR
+#endif
+
 static FileLogger* s_logger = nullptr;
 
 const std::array<const std::string_view, 3> MSGTYPES = {
