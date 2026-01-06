@@ -86,9 +86,11 @@ FileLogger::~FileLogger()
 
 namespace XELogger
 {
-  void Trace(const std::string_view str)
+  void Trace([[maybe_unused]] const std::string_view str)
   {
-    Log(str, LogType::TRACE);
+#   ifndef PRODUCT_BUILD
+      Log(str, LogType::TRACE);
+#   endif
   }
   
   void Warn(const std::string_view str)

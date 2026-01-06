@@ -16,7 +16,7 @@ enum class FILEOPENFLAGS : uint8_t
   READ = TOBIT(0),
   WRITE = TOBIT(1),
   APPEND = TOBIT(2),
-  REMOVEDATA = TOBIT(3)
+  REMOVEDATA = TOBIT(3),
 };
 
 enum class FILESETCURSOR : uint8_t
@@ -27,12 +27,13 @@ enum class FILESETCURSOR : uint8_t
 };
 
 /*
+4 bit size
 FLAGS:
   0 bit: Read
   1 bit: Write
   2 bit: Append
   3 bit: RemoveData (by default false)
-*/
+  */
 
 class XEngineFile
 {
@@ -53,14 +54,14 @@ public:
   std::string ReadAllData();
 
   void Read(
-    void* const start,
-    uint64_t size,
-    uint64_t count
+    void* const buffer,
+    uint32_t size,
+    uint32_t count
   );
 
   void GetLine(
-    char* start,
-    uint64_t count
+    char* const buffer,
+    int32_t count
   );
 
   [[nodiscard]]

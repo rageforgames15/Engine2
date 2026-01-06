@@ -1,6 +1,7 @@
 #include "FileIO.h"
 #include <filesystem>
 #include <utility>
+#include <fmt/base.h>
 
 bool XEngineFile::IsReadable()
 {
@@ -46,22 +47,22 @@ std::string XEngineFile::ReadAllData()
 }
 
 void XEngineFile::Read(
-  void* const start,
-  uint64_t size,
-  uint64_t count
+  void* const buffer,
+  uint32_t typeSize,
+  uint32_t count
 )
 {
   if(m_file)
-    fread(start, size, count, m_file);
+    fread(buffer, typeSize, count, m_file);
 }
 
 void XEngineFile::GetLine(
-  char* start,
-  uint64_t count
+  char* const buffer,
+  int32_t count
 )
 {
   if(m_file)
-    fgets(start, count, m_file);
+    fgets(buffer, count, m_file);
 }
 
 [[nodiscard]]
@@ -81,7 +82,7 @@ FILEERROR XEngineFile::Open(
     = flags & std::to_underlying(FILEOPENFLAGS::APPEND);
   bool removeData
     = flags & std::to_underlying(FILEOPENFLAGS::REMOVEDATA);
-
+    
   if(removeData || (!fileExist && writable))
     fclose(fopen(filePath.data(),"wb"));
 

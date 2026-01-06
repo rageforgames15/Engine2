@@ -34,12 +34,11 @@ GLFWwindow* CreateWindow(
     nullptr
   );
 
-  // TODO: Error massage.
   if(!window)
   {
     // Anyway, we have only 1 window
-    XELogger::ErrorAndCrash("Failed to open window");
-    return nullptr;
+    XELogger::ErrorAndCrash("Failed to create window");
+    return nullptr; // never call
   }
 
   glfwSetWindowSizeLimits(
@@ -93,9 +92,9 @@ void DefaultMouseMoveEvent(
 void DefaultKeyWindowEvent(
   GLFWwindow* glfwWindow,
   int key,
-  int scanMode,
-  int action,
-  int mods
+  [[maybe_unused]] int scanMode,
+  [[maybe_unused]] int action,
+  [[maybe_unused]] int mods
 )
 {
   Window* window = static_cast<Window*>(glfwGetWindowUserPointer(glfwWindow));
@@ -197,7 +196,7 @@ void Window::UnlockCursor() const
 
 Window::Window(const WindowSettings& settings)
   : m_window(CreateWindow(settings)),
-  m_isFocused(true)
+    m_isFocused(true)
 {
   glfwSetWindowUserPointer(m_window, this);
   glfwSetWindowFocusCallback(m_window, DefaultFocusEvent);

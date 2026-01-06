@@ -8,14 +8,6 @@
 #include <utility>
 #include "Profile.h"
 
-struct A
-{
-  const char hw[14] = "Nigga";
-  int a = 10;
-  int b = 114123414;
-};
-
-
 int main()
 {
   // THIS SHOULD LIVE ENTIRE PROGRAM, DONT PUT IT TO APPLICATION
@@ -35,7 +27,7 @@ int main()
     .size = {1280,720},
     .minSize = {640, 480},
     .MSAA = 0,
-    .resizable = false
+    .resizable = true
   };
 
   Application app(settings);
