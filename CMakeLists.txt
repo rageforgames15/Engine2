@@ -1,3 +1,5 @@
+#TODO: Disable exceptions in production build
+
 cmake_minimum_required(VERSION 4.1)
 
 set(CMAKE_DEBUGGER_WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}")

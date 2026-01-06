@@ -1,6 +1,4 @@
 #include "glad/gl.h"
-#include <GL/gl.h>
-#include <GL/glext.h>
 #include <cstddef>
 #include <cstdint>
 #include <fmt/base.h>
