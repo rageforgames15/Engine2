@@ -17,6 +17,10 @@ void AppLayer::OnEvent(Event& event)
     EventType::APP_TICK,
     ApplcationTickEvent
   >(BIND(&AppLayer::OnTick));
+  dispatch.VoidDispatch<
+    EventType::MOUSE_BUTTON_PRESSED,
+    MouseButtonPressedEvent
+  >(BIND(&AppLayer::OnMousePress));
 }
 
 void AppLayer::OnAttach()
@@ -29,7 +33,10 @@ void AppLayer::Draw(const DrawData& data)
 {
   m_vao.Bind();
   m_shader.Use();
-  m_text.BindTexture(0);
+  if(!m_isFaceText)
+    m_text.BindTexture(0);
+  else
+    m_face.BindTexture(0);
   glm::mat4 mvp
     = glm::perspective(
       glm::radians(m_camera.GetFov()),
@@ -58,11 +65,20 @@ void AppLayer::OnTick(const ApplcationTickEvent& event)
     m_cube.rotation.y += 90.f * event.dt;
 }
 
+void AppLayer::OnMousePress(const MouseButtonPressedEvent& event)
+{
+  if(event.IsLeft())
+    m_isFaceText = !m_isFaceText;
+}
+
 AppLayer::AppLayer()
-  : m_shader(
+  : m_shader{
     "res/shaders/basic_vertex.vert",
     "res/shaders/basic_fragment.frag"
-  ), m_text("res/images/wood.jpg", GL_IMAGE_2D)
+  },
+  m_text{"res/images/wood.jpg", GL_TEXTURE_2D},
+  m_face{"res/images/face.png", GL_TEXTURE_2D},
+  m_isFaceText{false}
 {
   Vertex vertices[] = {
     {glm::vec3(-0.5f, -0.5f, -0.5f), glm::vec2(0.0f, 0.0f)},

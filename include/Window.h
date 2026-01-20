@@ -44,6 +44,14 @@ public:
     int focused
   );
 
+  friend
+  void DefMouseButtonCallback(
+    GLFWwindow* glfwwindow,
+    int button,
+    int action,
+    int mods
+  );
+
 public:
   void SetTitle(std::string_view title);
 
@@ -69,6 +77,11 @@ public:
 
   Window(const WindowSettings& settings);
   ~Window();
+
+  Window(const Window&) = delete;
+  void operator=(const Window&) = delete;
+  Window(Window&&) = delete;
+  void operator=(Window&&) = delete;
 private:
   InputManager m_inputManager;
   EventCallbacker m_callback;

@@ -38,12 +38,11 @@ public:
   {}
 };
 
-class MouseButtonReleased
+class MouseButtonReleasedEvent
   : public MouseButtonEvent
 {
 public:
-  MouseButtonReleased(bool isLeftButton)
+  MouseButtonReleasedEvent(bool isLeftButton)
     : MouseButtonEvent(isLeftButton, EventType::MOUSE_BUTTON_RELEASED)
   {}
 };
-

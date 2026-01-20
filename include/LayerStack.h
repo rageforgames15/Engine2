@@ -12,8 +12,6 @@ class LayerStack
 private:
   using layerStackVectorDef = std::vector<std::unique_ptr<Layer>>;
 public:
-  LayerStack() = default;
-  ~LayerStack() = default;
 
   template<inheartedFromLayer T>
   void PushToLayerStack()
@@ -29,14 +27,22 @@ public:
     for(auto& layer : m_layers)
     {
       if(typeid(*layer) == typeid(T))
-        return &(*layer);
+      return &(*layer);
     }
-
+  
     return nullptr;
   }
 
   layerStackVectorDef::iterator begin();
   layerStackVectorDef::iterator end();
+
+  LayerStack() = default;
+  ~LayerStack() = default;
+
+  LayerStack(const LayerStack&) = delete;
+  void operator=(const LayerStack&) = delete;
+  LayerStack(LayerStack&&) = delete;
+  void operator=(LayerStack&&) = delete;
 private:
   layerStackVectorDef m_layers;
 };

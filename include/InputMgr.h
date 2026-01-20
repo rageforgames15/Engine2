@@ -17,6 +17,8 @@ public:
 
   InputManager(const InputManager&) = delete;
   void operator=(const InputManager&) = delete;
+  InputManager(InputManager&&) = delete;
+  void operator=(InputManager&&) = delete;
 private:
   bool m_keys[GLFW_KEY_LAST];
   EventCallbacker m_callbackFunction;
