@@ -13,8 +13,6 @@ int main()
 {
   // THIS SHOULD LIVE ENTIRE PROGRAM, DONT PUT IT TO APPLICATION
   XENGINE_START_PROFILE("Init engine");
-
-	xengine_assert(false);
   FileLogger logger(false);
   glfwInit();
 

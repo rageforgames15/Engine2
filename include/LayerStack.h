@@ -2,6 +2,7 @@
 #include "Layer.h"
 #include <vector>
 #include <memory>
+#include "Asserts.h"
 
 template<typename T> 
 concept inheartedFromLayer = std::is_base_of_v<Layer,T>;
@@ -15,11 +16,24 @@ public:
   ~LayerStack() = default;
 
   template<inheartedFromLayer T>
-  void PushToLayerStack();
+  void PushToLayerStack()
+  {
+    xengine_assert(GetLayer<T>() == nullptr);
+    m_layers.emplace_back(std::make_unique<T>());
+  }
 
   // @return - Pointer to layer, if it not finded return nullptr
   template<inheartedFromLayer T>
-  Layer* GetLayer();
+  Layer* GetLayer()
+  {
+    for(auto& layer : m_layers)
+    {
+      if(typeid(*layer) == typeid(T))
+        return &(*layer);
+    }
+
+    return nullptr;
+  }
 
   layerStackVectorDef::iterator begin();
   layerStackVectorDef::iterator end();

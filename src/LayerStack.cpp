@@ -14,22 +14,3 @@ layerStackVecDef::iterator LayerStack::end()
 {
   return m_layers.end();
 }
-
-template<inheartedFromLayer T>
-Layer* LayerStack::GetLayer()
-{
-  for(auto& layer : m_layers)
-  {
-    if(typeid(*layer) == typeid(T))
-      return &(*layer);
-  }
-
-  return nullptr;
-}
-
-template<inheartedFromLayer T>
-void LayerStack::PushToLayerStack()
-{
-  xengine_assert(GetLayer<T>() == nullptr);
-  m_layers.emplace_back(std::make_unique<T>());
-}

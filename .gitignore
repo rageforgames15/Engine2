@@ -11,3 +11,6 @@ compile_commands.json
 log.txt
 FileToRemove
 log.txt
+CMakeFiles
+CMakeFiles/
+CmakeFiles/*

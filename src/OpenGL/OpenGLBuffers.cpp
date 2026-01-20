@@ -105,9 +105,7 @@ void OpenGLEBO::SetData(const uint32_t* indexis, size_t size, uint32_t usage)
 {
   if(s_bindedEBOBuffer != m_id)
     Bind();
-  std::cout << glGetError() << '\n';
   glBufferData(GL_ELEMENT_ARRAY_BUFFER, size, indexis, usage);
-  std::cout << glGetError() << '\n';
 }
 
 OpenGLEBO::OpenGLEBO()

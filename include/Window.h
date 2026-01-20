@@ -6,8 +6,8 @@
 
 struct WindowSize final
 {
-  int width;
-  int height;
+  int32_t width;
+  int32_t height;
 };
 
 struct WindowSettings final

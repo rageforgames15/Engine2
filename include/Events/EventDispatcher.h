@@ -16,6 +16,15 @@ public:
     }
   }
 
+  template<EventType Type = EventType::NONE, typename FnEvent>
+  void VoidDispatch(std::function<void(const FnEvent&)> fn)
+  {
+    if(!m_event.m_ishandled && Type == m_event.m_type)
+    {
+      fn((const FnEvent&)m_event);
+    }
+  }
+
 private:
   Event& m_event;
 };

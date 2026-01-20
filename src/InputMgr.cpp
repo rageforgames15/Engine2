@@ -11,7 +11,7 @@ static InputManager* s_InputManager = nullptr;
 
 bool InputManager::IsKeyPressed(int key)
 {
-  xengine_assert(key < GLFW_KEY_LAST);
+  xengine_assert(key < GLFW_KEY_LAST && key >= 0);
   return m_keys[key];
 }
 
@@ -43,7 +43,6 @@ InputManager::InputManager()
 {
   xengine_assert(s_InputManager == nullptr);
   s_InputManager = this;
-  // Better if we know what everethihg is zero
   memset(&m_keys, 0, sizeof(m_keys));
 }
 
