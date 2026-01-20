@@ -21,6 +21,8 @@ public:
 
   FileLogger(const FileLogger&) = delete;
   void operator=(const FileLogger&) = delete;
+  FileLogger(FileLogger&&) = delete;
+  void operator=(FileLogger&&) = delete;
 private:
   FILE* m_file = nullptr;
   bool m_isBlocked = false;

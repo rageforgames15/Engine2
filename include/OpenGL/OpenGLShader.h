@@ -17,6 +17,11 @@ public:
 
   static void UnbindShader();
   ~OpenGLShader();
+
+  OpenGLShader(const OpenGLShader&) = delete;
+  void operator=(const OpenGLShader&) = delete;
+  OpenGLShader(OpenGLShader&&) = delete;
+  void operator=(OpenGLShader&&) = delete;
 private:
   uint32_t m_programID;
 };

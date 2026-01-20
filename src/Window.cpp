@@ -9,14 +9,16 @@
 #include <functional>
 #include <string_view>
 #include "FileLogger.h"
+#include "fmt/format.h"
+#include "EnginePrint.h"
 
 #ifdef CreateWindow
 #undef CreateWindow
 #endif
 
-void glfwError(int code, const char* desc)
+static void glfwError(int code, const char* desc)
 {
-  fmt::print("Code: {}, Desc: {}", code, desc);
+  XELogger::Error(fmt::format("Code: {}, Desc: {}", code, desc));
 }
 
 GLFWwindow* CreateWindow(
@@ -130,6 +132,29 @@ void DefaultFocusEvent(
   }
 }
 
+void DefMouseButtonCallback(
+  GLFWwindow* glfwwindow,
+  int button,
+  int action,
+  [[maybe_unused]] int mods
+)
+{
+  Window* window = static_cast<Window*>(glfwGetWindowUserPointer(glfwwindow));
+  if(window->m_callback != nullptr)
+  {
+    if(action == GLFW_PRESS)
+    {
+      MouseButtonPressedEvent ev{button == GLFW_MOUSE_BUTTON_LEFT};
+      window->m_callback(ev);
+    }
+    else
+    {
+      MouseButtonReleasedEvent ev{button == GLFW_MOUSE_BUTTON_LEFT};
+      window->m_callback(ev);
+    }
+  }
+}
+
 bool Window::IsFocused() const
 {
   return m_isFocused;
@@ -208,6 +233,7 @@ Window::Window(const WindowSettings& settings)
   glfwSetWindowCloseCallback(m_window, DefaultCloseEvent);
   glfwSetKeyCallback(m_window, DefaultKeyWindowEvent);
   glfwSetCursorPosCallback(m_window, DefaultMouseMoveEvent);
+  glfwSetMouseButtonCallback(m_window, DefMouseButtonCallback);
   glfwFocusWindow(m_window);
 }
 

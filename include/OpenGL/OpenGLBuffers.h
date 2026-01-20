@@ -22,6 +22,11 @@ public:
 
   OpenGLVBO();
   ~OpenGLVBO();
+
+  OpenGLVBO(const OpenGLVBO&) = delete;
+  void operator=(const OpenGLVBO&) = delete;
+  OpenGLVBO(OpenGLVBO&&) = delete;
+  void operator=(OpenGLVBO&&) = delete;
 private:
   uint32_t m_id;
 };
@@ -34,6 +39,11 @@ public:
 
   OpenGLVAO();
   ~OpenGLVAO();
+
+  OpenGLVAO(const OpenGLVAO&) = delete;
+  void operator=(const OpenGLVAO&) = delete;
+  OpenGLVAO(OpenGLVAO&&) = delete;
+  void operator=(OpenGLVAO&&) = delete;
 private:
   uint32_t m_id;
 };
@@ -48,7 +58,10 @@ public:
   OpenGLEBO();
   ~OpenGLEBO();
 
+  OpenGLEBO(const OpenGLEBO&) = delete;
+  void operator=(const OpenGLEBO&) = delete;
+  OpenGLEBO(OpenGLEBO&&) = delete;
+  void operator=(OpenGLEBO&&) = delete;
 private:
   uint32_t m_id;
 };
-

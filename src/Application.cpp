@@ -7,16 +7,20 @@
 #include "Timestep.h"
 #include "Events/ApplicationEvents.h"
 #include "FileLogger.h"
+#include "AppLayer.h"
+#include <thread>
+#include <chrono>
+#include "EnginePrint.h"
 
 static FileLogger s_logger{false};
 
 void Application::OnEvent(Event& event)
 {
-  EventDispatcher dispatcher(event);
   for(auto it = m_layerStack.begin(); it != m_layerStack.end(); ++it)
   {
       it->get()->OnEvent(event);
   }
+  EventDispatcher dispatcher(event);
   dispatcher.Dispatch
   <EventType::WINDOW_RESIZED, WindowResizeEvent>
   (BIND(&Application::OnWindowResize));
@@ -36,13 +40,17 @@ void Application::Run()
   m_running = true;
   Timestep dtStep;
   float dt{0.f};
+  DrawData drawData{};
+  m_layerStack.PushToLayerStack<AppLayer>();
+  
   /*
   PipeLine:
+    Calculate DT
     PollEvents
     ClearBuffers
+    Update drawdata
     Render:
       Render Layers
-    Calculate DT
     Update Layers
     Update scripts (WIP)
     SwapBuffers
@@ -53,29 +61,34 @@ void Application::Run()
   {
     glfwPollEvents();
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    WindowSize wndSize = m_window.GetWindowSize();
+    drawData.height = wndSize.height;
+    drawData.width = wndSize.width;
     for(auto it = m_layerStack.begin(); it != m_layerStack.end(); ++it)
     {
-      it->get()->Draw();
+      it->get()->Draw(drawData);
     }
-    dtStep.NewTimeStep();
-    ApplcationTickEvent updateEvent(dtStep.GetInSeconds());
+    ApplcationTickEvent updateEvent(dt);
     OnEvent(updateEvent);
     m_window.SwapBuffer();
+    dt = dtStep.GetInSeconds();
+    dtStep.NewTimeStep();
   }
 }
 
 bool Application::OnWindowResize(const WindowResizeEvent& event)
 {
+  glViewport(0,0,event.GetWidth(), event.GetHeight());
   return true;
 }
 
-bool Application::OnWindowClose(const WindowClosedEvent& event)
+bool Application::OnWindowClose([[maybe_unused]] const WindowClosedEvent& event)
 {
   Stop();
   return true;
 }
 
-bool Application::OnMouseMove(const MouseMovedEvent& event)
+bool Application::OnMouseMove([[maybe_unused]] const MouseMovedEvent& event)
 {
   return true;
 }

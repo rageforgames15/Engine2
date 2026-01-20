@@ -1,6 +1,6 @@
 #version 460 core
 
-layout(location = 0) uniform sampler2D u_tex;
+uniform sampler2D u_tex;
 
 in vec2 o_UVPos;
 

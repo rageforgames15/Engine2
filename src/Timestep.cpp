@@ -9,8 +9,7 @@ std::chrono::duration<float> Timestep::GetElapseTime()
 
 void Timestep::NewTimeStep()
 {
-  auto currentTime = std::chrono::steady_clock::now();
-  m_lastTimePoint = currentTime;
+  m_lastTimePoint = std::chrono::steady_clock::now();
 }
 
 float Timestep::GetInMilliseconds()

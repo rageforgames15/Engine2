@@ -51,9 +51,9 @@ target_include_directories(
 target_compile_definitions(${CMAKE_PROJECT_NAME} PRIVATE SOL_LUAJIT=1 SOL_USING_CXX_LUAJIT=1 SOL_NO_EXCEPTIONS=1)
 
 if(MSVC)
-  target_compile_options(${CMAKE_PROJECT_NAME} PRIVATE /W4)
+  target_compile_options(${CMAKE_PROJECT_NAME} PRIVATE /W4 /WX /Wall)
 else()
-  target_compile_options(${CMAKE_PROJECT_NAME} PRIVATE -Wall -Wextra)
+  target_compile_options(${CMAKE_PROJECT_NAME} PRIVATE -Wall -Wextra -Werror)
 endif()
 
 if(DEFINED ENV{PRODUCT_BUILD})

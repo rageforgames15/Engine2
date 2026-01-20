@@ -23,6 +23,12 @@ public:
 
   Application(const ApplicationSpecific& specific);
   virtual ~Application() = default;
+
+  Application(const Application&) = delete;
+  void operator=(const Application&) = delete;
+  Application(Application&&) = delete;
+  void operator=(Application&&) = delete;
+
 private:
 
   Window m_window;
