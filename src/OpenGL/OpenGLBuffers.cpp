@@ -10,7 +10,7 @@ static uint32_t s_bindedVAOBuffer{};
 static uint32_t s_bindedEBOBuffer{};
 
 // OPENGLVBO
-void OpenGLVBO::SetData(void* data, size_t size, int usage)
+void OpenGLVBO::SetData(void* data, size_t size, uint32_t usage)
 {
   if(s_bindedVBOBuffer != m_id)
     Bind();

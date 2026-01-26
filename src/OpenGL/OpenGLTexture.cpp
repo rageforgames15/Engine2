@@ -6,7 +6,7 @@
 #include <cstdint>
 
 void OpenGLTexture::BindTexture(
-  uint8_t textureUnit
+  uint32_t textureUnit
 )
 {
   xengine_assertmsg(textureUnit < 32, "Texture units must be smaller than 32");
@@ -31,8 +31,6 @@ OpenGLTexture::OpenGLTexture(std::string_view path, uint32_t type)
     &m_textureBits,
     STBI_rgb_alpha
   );
-
-  xengine_assert(data != nullptr); // Debuger thing
 
   if(!data) // RunTime thing
     return;

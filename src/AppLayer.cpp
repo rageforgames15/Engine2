@@ -10,6 +10,8 @@
 #include "glm/ext.hpp"
 #include "EnginePrint.h"
 
+static float s_time{};
+
 void AppLayer::OnEvent(Event& event)
 {
   EventDispatcher dispatch{event};
@@ -54,7 +56,7 @@ void AppLayer::Draw(const DrawData& data)
 
 void AppLayer::OnTick(const ApplcationTickEvent& event)
 {
-  InputManager& inputManager = InputManager::Get();
+/*  InputManager& inputManager = InputManager::Get();
   if(inputManager.IsKeyPressed(GLFW_KEY_W))
     m_cube.rotation.x -= 90.f * event.dt;
   if(inputManager.IsKeyPressed(GLFW_KEY_S))
@@ -63,6 +65,15 @@ void AppLayer::OnTick(const ApplcationTickEvent& event)
     m_cube.rotation.y -= 90.f * event.dt;
   if(inputManager.IsKeyPressed(GLFW_KEY_D))
     m_cube.rotation.y += 90.f * event.dt;
+*/
+	m_cube.rotation.x += 90.f * event.dt;
+	m_cube.rotation.y += 45.f * event.dt;
+	s_time += event.dt;
+	if (s_time > 5.f)
+	{
+		s_time -= 5.f;
+		m_isFaceText = !m_isFaceText;
+	}
 }
 
 void AppLayer::OnMousePress(const MouseButtonPressedEvent& event)

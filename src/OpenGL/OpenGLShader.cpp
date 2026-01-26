@@ -8,6 +8,7 @@
 #include <utility>
 #include <cstdio>
 #include "FileIO.h"
+#include <cstdint>
 
 enum class ShaderType : uint32_t
 {
@@ -38,7 +39,7 @@ std::expected<uint32_t, std::string> CompileShader(
   if(!result)
   {
     glGetShaderiv(shaderID, GL_INFO_LOG_LENGTH, &result);
-    std::string msg(result, '\0');
+    std::string msg(static_cast<uint64_t>(result), '\0');
     glGetShaderInfoLog(shaderID, result, nullptr, msg.data());
     return std::unexpected(std::move(msg));
   }
@@ -77,7 +78,7 @@ std::expected<uint32_t, std::string> CreateProgram(
   if(!result)
   {
     glGetProgramiv(programID, GL_INFO_LOG_LENGTH, &result);
-    std::string msg(result, '\0');
+    std::string msg(static_cast<uint64_t>(result), '\0');
     glGetProgramInfoLog(programID, result, nullptr, msg.data());
     return std::unexpected(std::move(msg));
   }

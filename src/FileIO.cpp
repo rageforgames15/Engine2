@@ -23,12 +23,12 @@ void XEngineFile::WriteBinaryData(
     fwrite(start, size, count,  m_file);
 }
 
-uint64_t XEngineFile::GetCurrentPoint()
+uint32_t XEngineFile::GetCurrentPoint()
 {
   return ftell(m_file);
 }
 
-void XEngineFile::SetPoint(int64_t offset, FILESETCURSOR where)
+void XEngineFile::SetPoint(int32_t offset, FILESETCURSOR where)
 {
   fseek(m_file, offset, std::to_underlying(where));
 }
@@ -38,7 +38,7 @@ std::string XEngineFile::ReadAllData()
 {
   if(!m_file) return "";
   SetPoint(0, FILESETCURSOR::END);
-  uint64_t size = GetCurrentPoint();
+  uint32_t size = GetCurrentPoint();
   SetPoint(0, FILESETCURSOR::START);
   std::string data(size, '\0');
   Read(data.data(), sizeof(uint8_t), size);

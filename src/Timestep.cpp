@@ -14,10 +14,10 @@ void Timestep::NewTimeStep()
 
 float Timestep::GetInMilliseconds()
 {
-  return
-    std::chrono::duration_cast<std::chrono::milliseconds>(
-      GetElapseTime()
-    ).count();
+  return static_cast<float>(
+		std::chrono::duration_cast<std::chrono::milliseconds>
+		(GetElapseTime()).count()
+	);
 }
 
 float Timestep::GetInSeconds()
