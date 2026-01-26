@@ -48,8 +48,8 @@ public:
     uint64_t count
   );
 
-  uint64_t GetCurrentPoint();
-  void SetPoint(int64_t offset, FILESETCURSOR where);
+  uint32_t GetCurrentPoint();
+  void SetPoint(int32_t offset, FILESETCURSOR where);
 
   [[nodiscard]]
   std::string ReadAllData();

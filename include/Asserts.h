@@ -7,7 +7,7 @@
 // how i should work with fukcing windows API on fucking linux???
 #ifdef WIN32
 #include <Windows.h>
-#define ASSERTATION_WIN_BUFFER_SIZE 1 << 9
+#define ASSERTATION_WIN_BUFFER_SIZE 512
 
 #endif
 
@@ -17,8 +17,9 @@
 #define xengine_assert(expr) \
                     if(!(expr)) \
                     { \
+											const auto& srclocation = std::source_location::current(); \
                       printf( \
-                        "Assertion failed: %s, %d, %s \n", \
+                        "Assertion failed: %s, %d, %s\n", \
                         #expr, \
                         __LINE__, \
                         std::source_location::current().file_name() \
@@ -28,8 +29,9 @@
 #define xengine_assertmsg(expr, msg) \
                     if(!(expr)) \
                     { \
+											const auto& srclocation = std::source_location::current(); \
                       printf( \
-                        "Assertion failed: %s, %s, %d, %s \n", \
+                        "Assertion failed: %s, %s, %d, %s\n", \
                         #expr, \
                         msg, \
                         __LINE__, \
@@ -50,15 +52,10 @@
                         "Assertion failed: %s, %d, %s\n", \
                         #expr, \
                         __LINE__, \
-                        std::source_location::file_name() \
+                        std::source_location::current().file_name() \
                       ); \
                       MessageBoxA(NULL, buff, "Assertion failed", MB_OK | MB_ICONERROR); \
-                      printf( \
-                        "Assertion failed: %s, %d, %s \n", \
-                        #expr, \
-                        __LINE__, \
-                        std::source_location::file_name() \
-                      ); \
+                      printf("%.*s\n", ASSERTATION_WIN_BUFFER_SIZE, buff); \
                       std::abort(); \
                     }
 
@@ -73,15 +70,10 @@
                         #expr, \
                         msg, \
                         __LINE__, \
-                        std::source_location::file_name() \
+                        std::source_location::current().file_name() \
                       ); \
                       MessageBoxA(NULL, buff, "Assertion failed", MB_OK | MB_ICONERROR); \
-                      printf( \
-                        "Assertion failed: %s, %d, %s \n",\
-                        #expr, \
-                        __LINE__, \
-                        std::source_location::file_name() \
-                      ); \
+                      printf("%.*s\n",ASSERTATION_WIN_BUFFER_SIZE, buff); \
                       std::abort(); \
                     }
 #endif
@@ -103,15 +95,10 @@
                         "Assertion failed: %s, %d, %s\n", \
                         #expr, \
                         __LINE__, \
-                        std::source_location::file_name() \
+                        std::source_location::current().file_name() \
                       ); \
                       MessageBoxA(NULL, buff, "Assertion failed", MB_OK | MB_ICONERROR); \
-                      printf( \
-                        "Assertion failed: %s, %d, %s \n", \
-                        #expr, \
-                        __LINE__, \
-                        std::source_location::file_name() \
-                      ); \
+                      printf("%.*s\n", ASSERTATION_WIN_BUFFER_SIZE, buff); \
                       std::abort(); \
                     }
 #define xengine_prod_assertmsg(expr, msg) \
@@ -125,15 +112,10 @@
                         #expr, \
                         msg, \
                         __LINE__, \
-                        std::source_location::file_name() \
+                        std::source_location::current().file_name() \
                       ); \
                       MessageBoxA(NULL, buff, "Assertion failed", MB_OK | MB_ICONERROR); \
-                      printf( \
-                        "Assertion failed: %s, %d, %s \n",\
-                        #expr, \
-                        __LINE__, \
-                        std::source_location::file_name() \
-                      ); \
+                      printf("%.*s\n", ASSERTATION_WIN_BUFFER_SIZE, buff); \
                       std::abort(); \
                     }
 #else
@@ -144,7 +126,7 @@
                         "Assertion failed: %s, %d, %s \n", \
                         #expr, \
                         __LINE__, \
-                        std::source_location::file_name() \
+                        std::source_location::current().file_name() \
                       ); \
                       std::abort(); \
                     }
@@ -157,7 +139,7 @@
                         #expr, \
                         msg, \
                         __LINE__, \
-                        std::source_location::file_name() \
+                        std::source_location::current().file_name() \
                       ); \
                       std::abort(); \
                     }

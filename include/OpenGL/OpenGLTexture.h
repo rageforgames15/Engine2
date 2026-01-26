@@ -5,7 +5,7 @@
 class OpenGLTexture
 {
 public:
-  void BindTexture(uint8_t textureUnit);
+  void BindTexture(uint32_t textureUnit);
   uint32_t GetID() const;
 
   OpenGLTexture(std::string_view path, uint32_t type);

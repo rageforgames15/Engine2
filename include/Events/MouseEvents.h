@@ -5,15 +5,15 @@ class MouseMovedEvent
   : public Event
 {
 public:
-  float GetX() const {return m_x;}
-  float GetY() const {return m_y;}
+  double GetX() const {return m_x;}
+  double GetY() const {return m_y;}
 
-  MouseMovedEvent(float x, float y)
+  MouseMovedEvent(double x, double y)
   : Event(EventType::MOUSE_MOVE), m_x(x), m_y(y)
   {}
 
 private:
-  float m_x, m_y;
+  double m_x, m_y;
 };
 
 class MouseButtonEvent

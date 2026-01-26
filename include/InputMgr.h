@@ -2,6 +2,11 @@
 #include "Events/Events.h"
 #include <GLFW/glfw3.h>
 
+#ifdef _MSC_VER
+#pragma warning(push)
+#pragma warning(disable : 4820)
+#endif
+
 class InputManager final
 {
 public:
@@ -23,3 +28,7 @@ private:
   bool m_keys[GLFW_KEY_LAST];
   EventCallbacker m_callbackFunction;
 };
+
+#ifdef _MSC_VER
+#pragma warning(pop)
+#endif

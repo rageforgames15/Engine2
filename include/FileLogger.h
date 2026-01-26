@@ -2,6 +2,11 @@
 #include <cstdio>
 #include <string_view>
 
+#ifdef _MSC_VER
+#pragma warning(push)
+#pragma warning(disable : 4820)
+#endif
+
 class FileLogger
 {
 public:
@@ -35,3 +40,7 @@ namespace XELogger
   void Error(const std::string_view str);
   void ErrorAndCrash(const std::string_view str);
 };
+
+#ifdef _MSC_VER
+#pragma warning(pop)
+#endif

@@ -5,6 +5,7 @@
     "glm",
     "luajit",
     "stb",
-    "sol2"
+    "sol2",
+    "pkgconf"
   ]
 }

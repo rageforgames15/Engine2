@@ -30,4 +30,3 @@ private:
 };
 
 typedef std::function<void(Event&)> EventCallbacker;
-

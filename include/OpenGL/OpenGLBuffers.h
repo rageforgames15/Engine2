@@ -7,7 +7,7 @@ class OpenGLVBO
 {
 public:
   // dont forget it bind buffer
-  void SetData(void* data, size_t size, int mode);
+  void SetData(void* data, size_t size, uint32_t mode);
   void Bind();
   static void Unbind();
 
