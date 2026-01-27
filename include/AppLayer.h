@@ -9,6 +9,7 @@
 #include "OpenGL/OpenGLTexture.h"
 #include "Transform.h"
 #include "Camera.h"
+#include <vector>
 
 class AppLayer
   : public Layer
@@ -23,12 +24,14 @@ public:
   void OnMousePress(const MouseButtonPressedEvent& ev);
   AppLayer();
 private:
+	void updateTextureIndex();
+private:
+	std::vector<OpenGLTexture> m_textures;
   OpenGLShader m_shader;
   OpenGLVAO m_vao;
   OpenGLVBO m_vbo;
-  OpenGLTexture m_text;
-  OpenGLTexture m_face;
   Transform m_cube;
   Camera m_camera;
-  bool m_isFaceText;
+	size_t m_currentTextureIndex;
+	double m_remainTimeToChangeTexture;
 };

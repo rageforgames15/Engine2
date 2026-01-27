@@ -11,6 +11,7 @@
 #include <thread>
 #include <chrono>
 #include "EnginePrint.h"
+#include "fmt/format.h"
 
 static FileLogger s_logger{false};
 
@@ -57,10 +58,13 @@ void Application::Run()
     Proced layer queue transitions (WIP)
   */
 
+	float r{}, g{}, b{};
+
   while (m_running)
   {
     glfwPollEvents();
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		glClearColor(r, g, b, 1.0f);
     WindowSize wndSize = m_window.GetWindowSize();
     drawData.height = wndSize.height;
     drawData.width = wndSize.width;
@@ -70,6 +74,15 @@ void Application::Run()
     }
     ApplcationTickEvent updateEvent(dt);
     OnEvent(updateEvent);
+		r = r + 0.75f * dt;
+		g = g + 0.5f * dt;
+		b = b + dt * 2;
+		if (r > 1.0f)
+			r = 0;
+		if (g > 1.0f)
+			g = 0;
+		if (b > 1.0f)
+			b = 0;
     m_window.SwapBuffer();
     dt = dtStep.GetInSeconds();
     dtStep.NewTimeStep();

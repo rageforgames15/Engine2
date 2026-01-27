@@ -13,8 +13,8 @@ public:
 
   OpenGLTexture(const OpenGLTexture&) = delete;
   void operator=(const OpenGLTexture&) = delete;
-  OpenGLTexture(OpenGLTexture&&) = delete;
-  void operator=(OpenGLTexture&&) = delete;
+  OpenGLTexture(OpenGLTexture&&) noexcept;
+  OpenGLTexture& operator=(OpenGLTexture&&) noexcept;
 private:
   uint32_t m_id;
   uint32_t m_type;

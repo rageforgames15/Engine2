@@ -4,6 +4,8 @@
 #include "OpenGL/OpenGLTexture.h"
 #include "stb_image.h"
 #include <cstdint>
+#include "FileLogger.h"
+#include "fmt/format.h"
 
 void OpenGLTexture::BindTexture(
   uint32_t textureUnit
@@ -19,8 +21,38 @@ uint32_t OpenGLTexture::GetID() const
   return m_id;
 }
 
+OpenGLTexture& OpenGLTexture::operator=(OpenGLTexture&& other) noexcept
+{
+	if (this != &other)
+	{
+		m_id = m_id;
+		m_textureBits = m_textureBits;
+		m_textureHeight = m_textureHeight;
+		m_textureWidth = m_textureWidth;
+		m_type = m_type;
+		other.m_id = 0;
+		other.m_textureBits = 0;
+		other.m_textureHeight = 0;
+		other.m_textureWidth = 0;
+		other.m_type = 0;
+	}
+	return *this;
+}
+
+OpenGLTexture::OpenGLTexture(OpenGLTexture&& other) noexcept
+	: m_id{other.m_id},
+	m_type{other.m_type},
+	m_textureWidth{other.m_textureWidth},
+	m_textureHeight{other.m_textureHeight},
+	m_textureBits{other.m_textureBits}
+{}
+
 OpenGLTexture::OpenGLTexture(std::string_view path, uint32_t type)
-  : m_type(type)
+	: m_id{},
+	m_type{type},
+	m_textureWidth{},
+	m_textureHeight{},
+	m_textureBits{}
 {
   stbi_set_flip_vertically_on_load(true);
 
@@ -32,8 +64,11 @@ OpenGLTexture::OpenGLTexture(std::string_view path, uint32_t type)
     STBI_rgb_alpha
   );
 
-  if(!data) // RunTime thing
-    return;
+	if (!data) // RunTime thing
+	{
+		XELogger::Error(fmt::format("{} not a image. Texture could be safe loaded", path));
+		return;
+	}
 
   glGenTextures(1,&m_id);
   glBindTexture(type, m_id);

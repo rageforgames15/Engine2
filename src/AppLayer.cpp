@@ -9,8 +9,17 @@
 #include "glm/glm.hpp"
 #include "glm/ext.hpp"
 #include "EnginePrint.h"
+#include "Asserts.h"
+#include <filesystem>
 
 static float s_time{};
+
+void AppLayer::updateTextureIndex()
+{
+	m_currentTextureIndex = (m_currentTextureIndex + 1) % m_textures.size();
+	s_time = 0;
+	fmt::println("Current index is {}", m_currentTextureIndex);
+}
 
 void AppLayer::OnEvent(Event& event)
 {
@@ -35,10 +44,7 @@ void AppLayer::Draw(const DrawData& data)
 {
   m_vao.Bind();
   m_shader.Use();
-  if(!m_isFaceText)
-    m_text.BindTexture(0);
-  else
-    m_face.BindTexture(0);
+	m_textures[m_currentTextureIndex].BindTexture(0);
   glm::mat4 mvp
     = glm::perspective(
       glm::radians(m_camera.GetFov()),
@@ -71,26 +77,25 @@ void AppLayer::OnTick(const ApplcationTickEvent& event)
 	s_time += event.dt;
 	if (s_time > 5.f)
 	{
-		s_time -= 5.f;
-		m_isFaceText = !m_isFaceText;
+		updateTextureIndex();
 	}
 }
 
-void AppLayer::OnMousePress(const MouseButtonPressedEvent& event)
+void AppLayer::OnMousePress([[maybe_unused]] const MouseButtonPressedEvent& event)
 {
-  if(event.IsLeft())
-    m_isFaceText = !m_isFaceText;
+	updateTextureIndex();
 }
 
 AppLayer::AppLayer()
-  : m_shader{
-    "res/shaders/basic_vertex.vert",
-    "res/shaders/basic_fragment.frag"
-  },
-  m_text{"res/images/wood.jpg", GL_TEXTURE_2D},
-  m_face{"res/images/face.png", GL_TEXTURE_2D},
-  m_isFaceText{false}
+	: m_textures{},
+	m_shader{
+		"res/shaders/basic_vertex.vert",
+		"res/shaders/basic_fragment.frag"
+	},
+	m_currentTextureIndex{0},
+	m_remainTimeToChangeTexture{0}
 {
+	m_textures.reserve(5);
   Vertex vertices[] = {
     {glm::vec3(-0.5f, -0.5f, -0.5f), glm::vec2(0.0f, 0.0f)},
     {glm::vec3( 0.5f, -0.5f, -0.5f), glm::vec2(1.0f, 0.0f)},
@@ -134,6 +139,25 @@ AppLayer::AppLayer()
     {glm::vec3(-0.5f,  0.5f,  0.5f), glm::vec2(0.0f, 0.0f)},
     {glm::vec3(-0.5f,  0.5f, -0.5f), glm::vec2(0.0f, 1.0f)}
   };
+
+	std::vector<std::filesystem::path> pathTextures;
+	xengine_prod_assertmsg(
+		std::filesystem::exists("res/images")
+		&& std::filesystem::is_directory("res/images"),
+		"res/images is not exist or res/images not directory"
+	);
+
+	for (const auto& entry : std::filesystem::directory_iterator{"res/images"})
+	{
+		if (entry.is_regular_file())
+			pathTextures.emplace_back(entry);
+	}
+
+	xengine_prod_assertmsg(pathTextures.size() != 0, "Could find any files in directory res/images")
+
+	for (const auto& path : pathTextures)
+		m_textures.emplace_back(path.string(), GL_TEXTURE_2D);
+
   m_vao.Bind();
   m_vbo.SetData(vertices, sizeof(vertices), GL_STATIC_DRAW);
   m_vbo.SetAttribute(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), 0);
