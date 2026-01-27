@@ -5,7 +5,8 @@
       "name": "default",
       "binaryDir": "${sourceDir}/build/",
       "cacheVariables": {
-        "CMAKE_TOOLCHAIN_FILE" : "$env{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake"
+        "CMAKE_TOOLCHAIN_FILE": "$env{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake",
+        "PRODUCT_BUILD": false
       }
     },
     {
@@ -26,10 +27,8 @@
       "name": "Production",
       "inherits": "default",
       "cacheVariables": {
-        "CMAKE_BUILD_TYPE": "Release"
-      },
-      "environment": {
-        "PRODUCT_BUILD": "1"
+        "CMAKE_BUILD_TYPE": "Release",
+        "PRODUCT_BUILD": true
       }
     }
   ],

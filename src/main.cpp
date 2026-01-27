@@ -19,8 +19,8 @@ int main()
   ApplicationSpecific settings;
   settings.windowSettings = {
     .title = "Engine",
-    .size = {1280,720},
-    .minSize = {640, 480},
+    .size = {512,512},
+    .minSize = {0, 0},
     .MSAA = 0,
     .resizable = true
   };

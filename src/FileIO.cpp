@@ -2,6 +2,8 @@
 #include <filesystem>
 #include <utility>
 #include <fmt/base.h>
+#include "fmt/format.h"
+#include "FileLogger.h"
 
 bool XEngineFile::IsReadable()
 {
@@ -92,8 +94,11 @@ FILEERROR XEngineFile::Open(
   {
     if(fileExist)
       m_file = fopen(filePath.data(), "rb");
-    else
+		else
+		{
+			XELogger::Error(fmt::format("File {} doesn't exist", filePath));
       return FILEERROR::FILEDONTEXIST;
+		}
   }
   else
   {
